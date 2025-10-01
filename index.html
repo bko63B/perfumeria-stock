@@ -2,809 +2,1728 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Perfumeria KONATE - Accès Privé Balla KONATE</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Gestion des Ventes - Parfums & Cosmétiques</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg: #0f1724;
-            --card: #0b1220;
-            --muted: #9aa4b2;
-            --accent: #6ee7b7;
-            --danger: #ff7b7b;
-            --discount: #ffa726;
-            --warning: #fbbf24;
-            --currency: #60a5fa;
+            --primary: #8e44ad;
+            --primary-light: #bb8fce;
+            --primary-dark: #6c3483;
+            --secondary: #f39c12;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --success: #28a745;
+            --danger: #dc3545;
+            --warning: #ffc107;
+            --info: #17a2b8;
+            --gray: #6c757d;
+            --gray-light: #e9ecef;
+            --border-radius: 12px;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
         }
         
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
         body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background: linear-gradient(135deg, #0a1128 0%, #0f172a 100%);
-            color: #f1f5f9;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
+            background-color: #f5f7fa;
+            color: var(--dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-text-size-adjust: 100%;
+            -webkit-tap-highlight-color: transparent;
         }
         
-        /* Styles de sécurité */
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 0;
+        }
+        
+        /* Security Gate Styles */
         #securityGate {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .security-card {
+            background-color: white;
+            padding: 25px 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
             width: 100%;
-            max-width: 440px;
-            background: rgba(15, 23, 42, 0.9);
-            border-radius: 20px;
-            padding: 40px 30px;
-            box-shadow: 
-                0 25px 50px -12px rgba(0, 0, 0, 0.5),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(16px);
+            max-width: 400px;
             text-align: center;
         }
         
-        .security-header {
-            margin-bottom: 30px;
+        .security-card h1 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 1.5rem;
         }
         
-        .security-logo {
-            font-size: 28px;
-            margin-bottom: 15px;
-            color: var(--accent);
-        }
-        
-        .security-title {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 8px;
-            background: linear-gradient(135deg, var(--accent), #10b981);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .security-subtitle {
-            color: var(--muted);
-            font-size: 14px;
-            line-height: 1.5;
+        .security-card p {
+            color: var(--gray);
+            margin-bottom: 25px;
+            font-size: 1rem;
         }
         
         .security-form {
-            margin: 25px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
         }
         
-        .input-group {
-            margin-bottom: 20px;
+        .form-group {
             text-align: left;
         }
         
-        .input-label {
+        .form-group label {
             display: block;
             margin-bottom: 8px;
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--muted);
-        }
-        
-        .security-input {
-            width: 100%;
-            padding: 14px 16px;
-            border-radius: 12px;
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            background: rgba(30, 41, 59, 0.5);
-            color: white;
-            font-size: 16px;
-            transition: all 0.3s ease;
-        }
-        
-        .security-input:focus {
-            outline: none;
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(110, 231, 183, 0.1);
-        }
-        
-        .security-btn {
-            width: 100%;
-            padding: 14px;
-            border: none;
-            border-radius: 12px;
-            background: linear-gradient(135deg, var(--accent), #10b981);
-            color: #042024;
-            font-size: 16px;
             font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 10px;
+            color: var(--dark);
+            font-size: 0.95rem;
         }
         
-        .security-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(110, 231, 183, 0.3);
-        }
-        
-        .security-btn:active {
-            transform: translateY(0);
-        }
-        
-        .security-error {
-            color: var(--danger);
-            font-size: 14px;
-            margin-top: 15px;
-            min-height: 20px;
-            padding: 10px;
+        .form-group input {
+            width: 100%;
+            padding: 14px 15px;
+            border: 1px solid #ddd;
             border-radius: 8px;
-            background: rgba(255, 123, 123, 0.1);
+            font-size: 1rem;
+            transition: var(--transition);
+            -webkit-appearance: none;
+        }
+        
+        .form-group input:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(142, 68, 173, 0.2);
+        }
+        
+        #securityWarning, #securityError {
+            padding: 12px;
+            border-radius: 8px;
+            margin: 10px 0;
             display: none;
+            font-size: 0.9rem;
         }
         
-        .security-warning {
-            color: var(--warning);
-            font-size: 13px;
-            margin: 15px 0;
-            padding: 10px;
+        #securityWarning {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        
+        #securityError {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        /* Toast Styles */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
             border-radius: 8px;
-            background: rgba(251, 191, 36, 0.1);
+            color: white;
+            font-weight: 600;
+            z-index: 10000;
+            display: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            max-width: 80%;
+            font-size: 0.95rem;
         }
         
-        .security-hint {
-            color: var(--muted);
-            font-size: 12px;
-            margin-top: 25px;
-            line-height: 1.5;
-            font-style: italic;
+        .toast-success {
+            background-color: var(--success);
         }
         
-        .security-footer {
-            margin-top: 25px;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            font-size: 12px;
-            color: var(--muted);
+        .toast-error {
+            background-color: var(--danger);
         }
         
-        /* Application styles (cachés par défaut) */
+        /* Application Styles */
         #appContainer {
             display: none;
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
+            height: 100vh;
+            overflow: hidden;
         }
         
-        .app-header {
+        /* Header Styles - MOBILE FIRST */
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 12px 15px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .header-top {
             display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            align-items: center;
             justify-content: space-between;
-            margin-bottom: 25px;
-            padding: 20px;
-            background: rgba(15, 23, 42, 0.8);
-            border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            align-items: center;
+            margin-bottom: 10px;
         }
         
-        .brand {
+        .logo {
             display: flex;
             align-items: center;
+            gap: 10px;
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .logo i {
+            font-size: 1.5rem;
+        }
+        
+        .app-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .user-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .user-info {
+            display: none; /* Hidden on mobile */
+        }
+        
+        .lock-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 10px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.85rem;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .lock-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .date-selector {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 12px;
+            border-radius: 20px;
+            width: 100%;
+            justify-content: center;
+        }
+        
+        .date-selector input {
+            padding: 5px;
+            border: none;
+            border-radius: 5px;
+            background: white;
+            font-size: 0.9rem;
+            width: 140px;
+        }
+        
+        /* Currency Selector */
+        .currency-selector {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 8px;
+        }
+        
+        .currency-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 6px 10px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .currency-btn.active {
+            background: rgba(255, 255, 255, 0.4);
+        }
+        
+        /* Main Content Area */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 140px);
+            overflow: hidden;
+        }
+        
+        /* Stats Section */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            padding: 15px;
+            background: white;
+            border-bottom: 1px solid var(--gray-light);
+        }
+        
+        .stat-card {
+            background-color: white;
+            padding: 12px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: var(--transition);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stat-card h3 {
+            font-size: 0.8rem;
+            margin-bottom: 8px;
+            color: var(--primary);
+        }
+        
+        .stat-card .value {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--dark);
+        }
+        
+        /* Tabs Navigation */
+        .tabs-container {
+            position: sticky;
+            top: 0;
+            z-index: 99;
+            background: white;
+            border-bottom: 1px solid var(--gray-light);
+        }
+        
+        .tabs {
+            display: flex;
+            background-color: white;
+            border-radius: 0;
+            overflow-x: auto;
+            margin-bottom: 0;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            padding: 0 5px;
+        }
+        
+        .tabs::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .tab {
+            flex: 0 0 auto;
+            min-width: 100px;
+            padding: 15px 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 600;
+            white-space: nowrap;
+            border-bottom: 3px solid transparent;
+            font-size: 0.85rem;
+        }
+        
+        .tab.active {
+            color: var(--primary);
+            border-bottom: 3px solid var(--primary);
+        }
+        
+        .tab i {
+            margin-right: 5px;
+            font-size: 0.9rem;
+        }
+        
+        /* Tab Content */
+        .tab-content-container {
+            flex: 1;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 20px;
+        }
+        
+        .tab-content {
+            display: none;
+            background-color: white;
+            padding: 15px;
+            min-height: 100%;
+            overflow-y: auto;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .tab-content h2 {
+            margin-bottom: 15px;
+            color: var(--primary);
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        /* Product List */
+        .product-list {
+            display: flex;
+            flex-direction: column;
             gap: 12px;
+            margin-bottom: 20px;
         }
         
-        .brand-logo {
-            font-size: 24px;
-            color: var(--accent);
+        .product-item {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 15px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            border-left: 4px solid var(--primary);
         }
         
-        .brand-text h1 {
-            font-size: 20px;
-            font-weight: 700;
-            margin-bottom: 4px;
+        .product-info {
+            flex: 1;
+            min-width: 0;
+            margin-bottom: 10px;
         }
         
-        .brand-text a {
-            color: var(--accent);
-            text-decoration: none;
-            font-size: 14px;
+        .product-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 1rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         
-        .brand-subtitle {
-            font-size: 12px;
-            color: var(--muted);
-            margin-top: 4px;
-        }
-        
-        .app-controls {
+        .product-details {
             display: flex;
             flex-wrap: wrap;
+            gap: 10px;
+            font-size: 0.85rem;
+            color: var(--gray);
+        }
+        
+        .product-price {
+            color: var(--primary);
+            font-weight: bold;
+        }
+        
+        .product-stock {
+            color: var(--dark);
+        }
+        
+        .product-category {
+            background-color: var(--primary-light);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+        }
+        
+        .product-actions {
+            display: flex;
+            gap: 8px;
+            width: 100%;
+        }
+        
+        /* Buttons */
+        .btn {
+            padding: 10px 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            flex: 1;
+        }
+        
+        .btn-block {
+            width: 100%;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary);
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #e67e22;
+        }
+        
+        .btn-success {
+            background-color: var(--success);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background-color: #218838;
+        }
+        
+        .btn-danger {
+            background-color: var(--danger);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+        
+        .btn-warning {
+            background-color: var(--warning);
+            color: var(--dark);
+        }
+        
+        .btn-warning:hover {
+            background-color: #e0a800;
+        }
+        
+        .btn-small {
+            padding: 8px 10px;
+            font-size: 0.8rem;
+        }
+        
+        /* Cart Section */
+        .cart {
+            background-color: white;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+            border-top: 1px solid var(--gray-light);
+        }
+        
+        .cart h2 {
+            margin-bottom: 15px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .cart-items {
+            margin-bottom: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .cart-item {
+            display: flex;
+            flex-direction: column;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+        
+        .cart-item-info {
+            flex: 1;
+            min-width: 0;
+            margin-bottom: 10px;
+        }
+        
+        .cart-item-name {
+            font-weight: bold;
+            margin-bottom: 3px;
+            font-size: 0.95rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .cart-item-details {
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+        
+        .cart-item-actions {
+            display: flex;
+            gap: 5px;
+            width: 100%;
+        }
+        
+        .cart-total {
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px solid var(--primary-light);
+            color: var(--primary);
+        }
+        
+        .discount-section {
+            margin: 15px 0;
+            padding: 15px;
+            background-color: var(--gray-light);
+            border-radius: var(--border-radius);
+        }
+        
+        .discount-options {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .discount-option {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            border: 2px solid transparent;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.85rem;
+        }
+        
+        .discount-option.active {
+            border-color: var(--primary);
+            background-color: rgba(142, 68, 173, 0.1);
+        }
+        
+        .discount-input {
+            display: flex;
             gap: 10px;
             align-items: center;
         }
         
-        .app-search {
-            padding: 10px 14px;
-            border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            background: rgba(30, 41, 59, 0.5);
-            color: white;
-            min-width: 200px;
+        .discount-input input {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            flex: 1;
+            font-size: 0.9rem;
         }
         
-        .app-btn {
-            padding: 10px 16px;
-            border-radius: 10px;
-            border: none;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
+        .payment-section {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
         }
         
-        .btn-primary {
-            background: var(--accent);
-            color: #042024;
+        /* Forms */
+        .form-group {
+            margin-bottom: 15px;
         }
         
-        .btn-secondary {
-            background: transparent;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: var(--accent);
-        }
-        
-        .btn-currency {
-            background: transparent;
-            border: 1px solid rgba(96, 165, 250, 0.3);
-            color: var(--currency);
-        }
-        
-        .btn-danger {
-            background: transparent;
-            border: 1px solid rgba(255, 123, 123, 0.3);
-            color: var(--danger);
-        }
-        
-        .app-btn:hover {
-            transform: translateY(-1px);
-        }
-        
-        .kpi-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-bottom: 25px;
-        }
-        
-        .kpi-card {
-            background: rgba(15, 23, 42, 0.8);
-            padding: 20px;
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .kpi-label {
-            font-size: 14px;
-            color: var(--muted);
+        .form-group label {
+            display: block;
             margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 0.95rem;
         }
         
-        .kpi-value {
-            font-size: 24px;
-            font-weight: 700;
-        }
-        
-        .currency-indicator {
-            font-size: 12px;
-            color: var(--currency);
-            margin-top: 5px;
-            font-weight: normal;
-        }
-        
-        .data-card {
-            background: rgba(15, 23, 42, 0.8);
-            border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            overflow: hidden;
-        }
-        
-        .table-container {
-            overflow-x: auto;
-            padding: 20px;
-        }
-        
-        .stock-table {
+        .form-group input, .form-group select, .form-group textarea {
             width: 100%;
-            border-collapse: collapse;
-            min-width: 800px;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: var(--transition);
+            -webkit-appearance: none;
         }
         
-        .stock-table th {
-            text-align: left;
-            padding: 12px 16px;
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--muted);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(142, 68, 173, 0.2);
         }
         
-        .stock-table td {
-            padding: 12px 16px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            font-size: 14px;
+        /* Reservations */
+        .reservations-list {
+            margin-top: 20px;
         }
         
-        .stock-table tr.low-stock td {
-            background: linear-gradient(90deg, rgba(255, 123, 123, 0.05), transparent);
+        .reservation-item {
+            background-color: white;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 15px;
+            border-left: 4px solid var(--secondary);
         }
         
-        .stock-value {
-            font-weight: 700;
+        .reservation-info h4 {
+            margin-bottom: 5px;
+            font-size: 1rem;
         }
         
-        .discount-badge {
-            color: var(--discount);
-            font-weight: 600;
+        .reservation-info p {
+            color: var(--dark);
+            font-size: 0.85rem;
+            margin-bottom: 5px;
         }
         
-        .final-price {
-            color: var(--accent);
-            font-weight: 700;
-        }
-        
-        .original-price {
-            text-decoration: line-through;
-            color: var(--muted);
-            font-size: 12px;
-        }
-        
-        .eur-price {
-            color: var(--currency);
-            font-size: 11px;
-            margin-top: 2px;
-        }
-        
-        .action-buttons {
+        .reservation-actions {
             display: flex;
             gap: 8px;
+            margin-top: 10px;
         }
         
-        .action-btn {
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 12px;
-            cursor: pointer;
-            border: none;
-            transition: all 0.2s ease;
+        /* Alerts */
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
         }
         
-        .edit-btn {
-            background: rgba(110, 231, 183, 0.1);
-            color: var(--accent);
+        .alert-warning {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
         }
         
-        .delete-btn {
-            background: rgba(255, 123, 123, 0.1);
-            color: var(--danger);
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
         }
         
-        /* Modal styles - CORRECTIONS POUR MOBILE */
-        .modal-overlay {
+        .alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        /* Modals */
+        .modal {
+            display: none;
             position: fixed;
             top: 0;
             left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.7);
-            display: none;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
             align-items: center;
             justify-content: center;
-            z-index: 1000;
             padding: 20px;
             overflow-y: auto;
         }
         
         .modal-content {
-            background: rgba(15, 23, 42, 0.95);
-            border-radius: 16px;
-            padding: 30px;
+            background-color: white;
+            padding: 20px;
+            border-radius: var(--border-radius);
             width: 100%;
             max-width: 500px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(16px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
             max-height: 90vh;
             overflow-y: auto;
-            position: relative;
         }
         
         .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .modal-header h3 {
+            color: var(--primary);
+            font-size: 1.3rem;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray);
+        }
+        
+        /* Empty States */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--gray);
+        }
+        
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: var(--gray-light);
+        }
+        
+        .empty-state p {
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+        
+        /* Stock value display */
+        .stock-value {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #eee;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+        
+        /* Report Styles */
+        .report-filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
             margin-bottom: 20px;
+            background: var(--gray-light);
+            padding: 15px;
+            border-radius: var(--border-radius);
+        }
+        
+        .report-filter-group {
+            flex: 1;
+            min-width: 150px;
+        }
+        
+        .report-summary {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .report-summary-card {
+            background: white;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+        
+        .report-summary-card h3 {
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            color: var(--primary);
+        }
+        
+        .report-summary-card .value {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--dark);
+        }
+        
+        .report-table-container {
+            overflow-x: auto;
+            margin-top: 15px;
+            border: 1px solid #eee;
+            border-radius: var(--border-radius);
+        }
+        
+        .report-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            min-width: 600px;
+        }
+        
+        .report-table th, .report-table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .report-table th {
+            background-color: var(--primary-light);
+            color: white;
+            font-weight: 600;
             position: sticky;
             top: 0;
-            background: rgba(15, 23, 42, 0.95);
-            padding: 10px 0;
-            z-index: 10;
         }
         
-        .modal-title {
-            font-size: 20px;
-            font-weight: 700;
-            margin-bottom: 5px;
+        .report-table tr:nth-child(even) {
+            background-color: #f9f9f9;
         }
         
-        .form-group {
-            margin-bottom: 20px;
+        .report-chart {
+            background: white;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-top: 20px;
+            text-align: center;
         }
         
-        .form-label {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 14px;
-            font-weight: 500;
-        }
-        
-        .form-input, .form-select {
-            width: 100%;
-            padding: 12px 14px;
-            border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            background: rgba(30, 41, 59, 0.5);
-            color: white;
-            font-size: 14px;
-        }
-        
-        .form-input:focus, .form-select:focus {
-            outline: none;
-            border-color: var(--accent);
-        }
-        
-        .form-hint {
-            font-size: 12px;
-            color: var(--muted);
-            margin-top: 5px;
-        }
-        
-        .modal-actions {
+        .chart-placeholder {
+            height: 200px;
             display: flex;
-            gap: 12px;
-            justify-content: flex-end;
-            margin-top: 25px;
-            position: sticky;
+            align-items: center;
+            justify-content: center;
+            background: var(--gray-light);
+            border-radius: var(--border-radius);
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        .text-success { color: var(--success); }
+        .text-warning { color: var(--warning); }
+        .text-danger { color: var(--danger); }
+        .text-muted { color: var(--gray); font-size: 0.9rem; }
+        
+        /* Currency Toggle */
+        .currency-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            background: var(--gray-light);
+            padding: 10px 15px;
+            border-radius: var(--border-radius);
+        }
+        
+        .currency-toggle span {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
             bottom: 0;
-            background: rgba(15, 23, 42, 0.95);
-            padding: 15px 0;
-            z-index: 10;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
         }
         
-        /* Toast notifications */
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            padding: 16px 20px;
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .toggle-slider {
+            background-color: var(--primary);
+        }
+        
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+        
+        /* Price Display */
+        .price-display {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .original-price {
+            text-decoration: line-through;
+            color: var(--gray);
+            font-size: 0.8rem;
+        }
+        
+        /* Responsive Adjustments */
+        @media (min-width: 768px) {
+            .container {
+                max-width: 750px;
+            }
+            
+            .stats {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .report-summary {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .app-title {
+                font-size: 1.6rem;
+            }
+            
+            .header-top {
+                margin-bottom: 0;
+            }
+            
+            .user-info {
+                display: block;
+                font-weight: 600;
+                font-size: 0.9rem;
+            }
+            
+            .date-selector {
+                width: auto;
+                margin-top: 0;
+                margin-left: 10px;
+            }
+            
+            .main-content {
+                height: calc(100vh - 120px);
+            }
+            
+            .product-item {
+                flex-direction: row;
+                align-items: center;
+            }
+            
+            .product-info {
+                margin-bottom: 0;
+            }
+            
+            .product-actions {
+                width: auto;
+                margin-left: 10px;
+            }
+            
+            .cart-item {
+                flex-direction: row;
+                align-items: center;
+            }
+            
+            .cart-item-info {
+                margin-bottom: 0;
+            }
+            
+            .cart-item-actions {
+                width: auto;
+                margin-left: 10px;
+            }
+            
+            .report-table {
+                min-width: auto;
+            }
+            
+            .currency-selector {
+                margin-top: 0;
+                margin-left: 10px;
+            }
+        }
+        
+        @media (min-width: 992px) {
+            .container {
+                max-width: 970px;
+            }
+        }
+        
+        @media (min-width: 1200px) {
+            .container {
+                max-width: 1140px;
+            }
+        }
+        
+        /* Animation for cart items */
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .cart-item {
+            animation: slideIn 0.3s ease;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
             border-radius: 10px;
-            background: rgba(15, 23, 42, 0.95);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(16px);
-            display: none;
-            z-index: 1001;
-            max-width: 350px;
         }
         
-        .toast-success {
-            border-left: 4px solid var(--accent);
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-light);
+            border-radius: 10px;
         }
         
-        .toast-error {
-            border-left: 4px solid var(--danger);
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
         }
         
         /* Mobile-specific improvements */
-        @media (max-width: 768px) {
-            body {
-                padding: 10px;
-                align-items: flex-start;
-            }
-            
-            .app-header {
-                flex-direction: column;
-                align-items: flex-start;
-                padding: 15px;
-            }
-            
-            .app-controls {
-                width: 100%;
-                justify-content: space-between;
-            }
-            
-            .app-search {
-                min-width: 100%;
-                margin-bottom: 10px;
-            }
-            
-            .kpi-container {
-                grid-template-columns: 1fr;
-            }
-            
-            /* Modal improvements for mobile */
-            .modal-overlay {
-                padding: 10px;
-                align-items: flex-start;
-            }
-            
-            .modal-content {
-                padding: 20px;
-                max-height: 95vh;
-                margin-top: 20px;
-                margin-bottom: 20px;
-            }
-            
-            .modal-actions {
-                flex-direction: column-reverse;
-                gap: 10px;
-            }
-            
-            .modal-actions .app-btn {
-                width: 100%;
-            }
-            
-            /* Table improvements */
-            .table-container {
-                padding: 10px;
-            }
-            
-            .stock-table {
-                min-width: 600px;
-            }
-            
-            .stock-table th,
-            .stock-table td {
-                padding: 8px 12px;
-                font-size: 13px;
-            }
-            
-            .action-buttons {
-                flex-direction: column;
-                gap: 5px;
-            }
-            
-            .action-btn {
-                padding: 8px;
-                font-size: 11px;
-            }
-        }
-        
         @media (max-width: 480px) {
-            .securityGate {
-                padding: 30px 20px;
+            .security-card {
+                padding: 20px 15px;
             }
             
-            .app-header {
-                padding: 12px;
+            .security-card h1 {
+                font-size: 1.3rem;
             }
             
-            .brand {
+            .reservation-actions {
                 flex-direction: column;
-                align-items: flex-start;
-                gap: 8px;
             }
             
-            .brand-text h1 {
-                font-size: 18px;
-            }
-            
-            .app-controls {
+            .payment-section {
                 flex-direction: column;
-                gap: 8px;
             }
             
-            .app-btn {
-                width: 100%;
-                text-align: center;
+            .discount-options {
+                flex-direction: column;
             }
             
             .modal-content {
                 padding: 15px;
             }
             
-            .form-input, .form-select {
-                padding: 14px 12px;
+            .report-filters {
+                flex-direction: column;
+            }
+            
+            .report-table {
+                font-size: 0.75rem;
+            }
+            
+            .report-table th, .report-table td {
+                padding: 8px 5px;
             }
         }
         
-        /* Touch device improvements */
-        @media (hover: none) and (pointer: coarse) {
-            .app-btn:hover,
-            .security-btn:hover,
-            .action-btn:hover {
-                transform: none;
+        /* iOS specific fixes */
+        @supports (-webkit-touch-callout: none) {
+            .security-card, .modal-content, .product-item, .cart, .reservation-item {
+                -webkit-backdrop-filter: blur(10px);
+                backdrop-filter: blur(10px);
             }
             
-            .app-btn:active,
-            .security-btn:active,
-            .action-btn:active {
-                transform: scale(0.98);
+            input, select, textarea {
+                font-size: 16px !important; /* Prevent zoom on iOS */
             }
-            
-            .form-input, .form-select, .security-input {
-                font-size: 16px; /* Prevent zoom on iOS */
+        }
+        
+        /* Android specific fixes */
+        @supports not (-webkit-touch-callout: none) {
+            .security-card, .modal-content, .product-item, .cart, .reservation-item {
+                backdrop-filter: blur(10px);
             }
         }
     </style>
 </head>
 <body>
-    <!-- Portail de sécurité -->
+    <!-- Security Gate -->
     <div id="securityGate">
-        <div class="security-header">
-            <div class="security-logo">🔐</div>
-            <h1 class="security-title">PERFUMERIA KONATE</h1>
-            <p class="security-subtitle">Accès strictement réservé à <strong>Balla KONATE</strong></p>
-        </div>
-        
-        <div class="security-form">
-            <div class="input-group">
-                <label class="input-label" for="accessKey">Clé d'accès principale</label>
-                <input type="password" id="accessKey" class="security-input" placeholder="Entrez votre clé d'accès" autocomplete="off">
-            </div>
+        <div class="security-card">
+            <h1><i class="fas fa-lock"></i> Accès Sécurisé</h1>
+            <p>Application réservée à Balla KONATE</p>
             
-            <div class="input-group">
-                <label class="input-label" for="personalCode">Code personnel</label>
-                <input type="password" id="personalCode" class="security-input" placeholder="Code à 6 chiffres" maxlength="6" autocomplete="off">
-            </div>
-            
-            <div id="securityError" class="security-error"></div>
-            <div id="securityWarning" class="security-warning"></div>
-            
-            <button id="accessBtn" class="security-btn">Accéder à l'application</button>
-        </div>
-        
-        <div class="security-hint">
-            <p>En cas de perte des identifiants, contactez le support technique.</p>
-        </div>
-        
-        <div class="security-footer">
-            <p>Application sécurisée • Accès personnel uniquement • Données chiffrées</p>
-        </div>
-    </div>
-    
-    <!-- Application (cachée par défaut) -->
-    <div id="appContainer">
-        <header class="app-header">
-            <div class="brand">
-                <div class="brand-logo">💎</div>
-                <div class="brand-text">
-                    <h1>Perfumeria KONATE</h1>
-                    <a href="https://www.perfumeriakonate.pl" target="_blank">www.perfumeriakonate.pl</a>
-                    <div class="brand-subtitle">Connecté en tant que <strong>Balla KONATE</strong> • Gestion de stock privée</div>
+            <div class="security-form">
+                <div class="form-group">
+                    <label for="accessKey">Clé d'accès :</label>
+                    <input type="password" id="accessKey" placeholder="Entrez votre clé d'accès">
+                </div>
+                
+                <div class="form-group">
+                    <label for="personalCode">Code personnel :</label>
+                    <input type="password" id="personalCode" placeholder="Entrez votre code personnel">
+                </div>
+                
+                <button class="btn btn-primary btn-block" id="accessBtn">
+                    <i class="fas fa-key"></i> Accéder à l'application
+                </button>
+                
+                <div id="securityWarning" class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <div id="warningText"></div>
+                </div>
+                
+                <div id="securityError" class="alert alert-error">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <div>Identifiants incorrects. Veuillez réessayer.</div>
                 </div>
             </div>
-            
-            <div class="app-controls">
-                <input type="text" id="searchInput" class="app-search" placeholder="Rechercher un produit...">
-                <button id="lowStockBtn" class="app-btn btn-secondary">Stock faible</button>
-                <button id="showAllBtn" class="app-btn btn-secondary" style="display:none;">Tous les produits</button>
-                <button id="toggleCurrencyBtn" class="app-btn btn-currency">Afficher en EUR</button>
-                <button id="addProductBtn" class="app-btn btn-primary">+ Nouveau</button>
-                <button id="exportBtn" class="app-btn btn-secondary">Exporter CSV</button>
-                <button id="exportDataBtn" class="app-btn btn-secondary">📤 Exporter données</button>
-                <button id="importDataBtn" class="app-btn btn-secondary">📥 Importer données</button>
-                <button id="lockBtn" class="app-btn btn-danger">🔒 Verrouiller</button>
-                <input type="file" id="importDataInput" accept=".json" style="display:none">
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+    
+    <!-- Application Container -->
+    <div id="appContainer" class="container">
+        <header>
+            <div class="header-top">
+                <div class="logo">
+                    <i class="fas fa-spa"></i>
+                    <div class="app-title">Parfums & Cosmétiques</div>
+                </div>
+                <div class="user-controls">
+                    <div class="user-info">Balla KONATE</div>
+                    <button class="lock-btn" id="lockBtn">
+                        <i class="fas fa-lock"></i> Verrouiller
+                    </button>
+                </div>
+            </div>
+            <div class="date-selector">
+                <i class="fas fa-calendar-alt"></i>
+                <input type="date" id="sale-date">
+            </div>
+            <div class="currency-selector">
+                <button class="currency-btn active" data-currency="EUR">EUR</button>
+                <button class="currency-btn" data-currency="PLN">PLN</button>
             </div>
         </header>
         
-        <div class="kpi-container">
-            <div class="kpi-card">
-                <div class="kpi-label">Produits en stock</div>
-                <div id="totalProducts" class="kpi-value">0</div>
+        <div class="main-content">
+            <div class="stats">
+                <div class="stat-card">
+                    <h3><i class="fas fa-shopping-bag"></i> Ventes du jour</h3>
+                    <div class="value" id="daily-sales">0 €</div>
+                </div>
+                <div class="stat-card">
+                    <h3><i class="fas fa-chart-line"></i> Ventes totales</h3>
+                    <div class="value" id="total-sales">0 €</div>
+                </div>
+                <div class="stat-card">
+                    <h3><i class="fas fa-boxes"></i> Produits en stock</h3>
+                    <div class="value" id="total-stock">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3><i class="fas fa-coins"></i> Valeur stock</h3>
+                    <div class="value" id="stock-value">0 €</div>
+                </div>
             </div>
-            <div class="kpi-card">
-                <div class="kpi-label">Stock faible</div>
-                <div id="lowStockCount" class="kpi-value">0</div>
+            
+            <div class="tabs-container">
+                <div class="tabs">
+                    <div class="tab active" data-tab="stock">
+                        <i class="fas fa-store"></i> Vente
+                    </div>
+                    <div class="tab" data-tab="products">
+                        <i class="fas fa-box-open"></i> Stock
+                    </div>
+                    <div class="tab" data-tab="reservations">
+                        <i class="far fa-calendar-check"></i> Réservations
+                    </div>
+                    <div class="tab" data-tab="history">
+                        <i class="fas fa-history"></i> Historique
+                    </div>
+                    <div class="tab" data-tab="global-sales">
+                        <i class="fas fa-list"></i> Ventes Globales
+                    </div>
+                    <div class="tab" data-tab="monthly-report">
+                        <i class="fas fa-chart-bar"></i> Rapport Mensuel
+                    </div>
+                    <div class="tab" data-tab="stock-report">
+                        <i class="fas fa-chart-line"></i> Stock Mensuel
+                    </div>
+                </div>
             </div>
-            <div class="kpi-card">
-                <div class="kpi-label">Valeur totale</div>
-                <div id="totalValue" class="kpi-value">0 zł</div>
-                <div id="totalValueEur" class="currency-indicator"></div>
-            </div>
-            <div class="kpi-card">
-                <div class="kpi-label">Valeur après remises</div>
-                <div id="totalValueAfterDiscount" class="kpi-value">0 zł</div>
-                <div id="totalValueAfterDiscountEur" class="currency-indicator"></div>
-            </div>
-        </div>
-        
-        <div class="data-card">
-            <div class="table-container">
-                <table class="stock-table">
-                    <thead>
-                        <tr>
-                            <th>Nom du produit</th>
-                            <th>Référence</th>
-                            <th>Catégorie</th>
-                            <th>Stock</th>
-                            <th>Alerte</th>
-                            <th>Prix</th>
-                            <th>Remise</th>
-                            <th>Prix final</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="stockTableBody">
-                        <!-- Les données seront chargées ici dynamiquement -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        
-        <!-- Modal pour ajouter/modifier un produit - AMÉLIORÉ POUR MOBILE -->
-        <div id="productModal" class="modal-overlay">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2 id="modalTitle" class="modal-title">Ajouter un produit</h2>
+            
+            <div class="tab-content-container">
+                <!-- Onglet Stock & Vente -->
+                <div class="tab-content active" id="stock-tab">
+                    <h2><i class="fas fa-cash-register"></i> Terminal de vente</h2>
+                    
+                    <div class="product-list" id="product-list">
+                        <!-- Les produits seront générés dynamiquement par JavaScript -->
+                    </div>
+                    
+                    <div class="cart">
+                        <h2><i class="fas fa-shopping-cart"></i> Panier</h2>
+                        <div class="cart-items" id="cart-items">
+                            <div class="empty-state">
+                                <i class="fas fa-shopping-cart"></i>
+                                <p>Votre panier est vide</p>
+                                <p class="text-muted">Ajoutez des produits pour commencer une vente</p>
+                            </div>
+                        </div>
+                        
+                        <div class="discount-section">
+                            <div class="discount-options">
+                                <div class="discount-option active" data-type="global">
+                                    <i class="fas fa-percentage"></i> Remise globale
+                                </div>
+                                <div class="discount-option" data-type="individual">
+                                    <i class="fas fa-tag"></i> Remise individuelle
+                                </div>
+                            </div>
+                            
+                            <div class="discount-input">
+                                <input type="number" id="global-discount" min="0" max="100" placeholder="0">
+                                <span>%</span>
+                                <button class="btn btn-secondary btn-small" id="apply-discount">Appliquer</button>
+                            </div>
+                        </div>
+                        
+                        <div class="cart-total">
+                            Total : <span id="cart-total">0.00 €</span>
+                        </div>
+                        
+                        <div class="payment-section">
+                            <button class="btn btn-success btn-block" id="validate-payment">
+                                <i class="fas fa-check-circle"></i> Valider le paiement
+                            </button>
+                            <button class="btn btn-danger" id="clear-cart">
+                                <i class="fas fa-trash"></i> Vider
+                            </button>
+                        </div>
+                    </div>
                 </div>
                 
-                <form id="productForm">
-                    <input type="hidden" id="productId">
+                <!-- Onglet Gestion des Produits -->
+                <div class="tab-content" id="products-tab">
+                    <h2><i class="fas fa-box-open"></i> Gestion du stock</h2>
                     
-                    <div class="form-group">
-                        <label class="form-label" for="productName">Nom du produit</label>
-                        <input type="text" id="productName" class="form-input" required>
+                    <div class="alert alert-success">
+                        <i class="fas fa-info-circle"></i>
+                        <div>
+                            <strong>Stock mis à jour automatiquement</strong> - Les quantités sont ajustées après chaque vente
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-primary btn-block" id="add-product-btn" style="margin-bottom: 20px;">
+                        <i class="fas fa-plus-circle"></i> Ajouter un nouveau produit
+                    </button>
+                    
+                    <div class="product-list" id="stock-product-list">
+                        <!-- Les produits en stock seront générés dynamiquement -->
+                    </div>
+                    
+                    <div class="stock-value">
+                        <span>Valeur totale du stock :</span>
+                        <span id="total-stock-value">0 €</span>
+                    </div>
+                </div>
+                
+                <!-- Onglet Réservations -->
+                <div class="tab-content" id="reservations-tab">
+                    <h2><i class="far fa-calendar-check"></i> Gestion des réservations</h2>
+                    
+                    <div class="alert alert-warning">
+                        <i class="fas fa-info-circle"></i>
+                        <div>
+                            <strong>Rappel automatique</strong> - Vous recevrez une alerte pour les réservations en attente
+                        </div>
                     </div>
                     
                     <div class="form-group">
-                        <label class="form-label" for="productSku">Référence (SKU)</label>
-                        <input type="text" id="productSku" class="form-input" placeholder="Ex: CHANEL-N5-EDP-50ML" required>
-                        <div class="form-hint">Identifiant unique pour le produit</div>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label" for="productCategory">Catégorie</label>
-                        <select id="productCategory" class="form-select" required>
-                            <option value="">Sélectionnez une catégorie</option>
-                            <option value="Parfum Femme">Parfum Femme</option>
-                            <option value="Parfum Homme">Parfum Homme</option>
-                            <option value="Parfum Unisexe">Parfum Unisexe</option>
-                            <option value="Eau de Toilette">Eau de Toilette</option>
-                            <option value="Eau de Parfum">Eau de Parfum</option>
-                            <option value="Accessoires">Accessoires</option>
+                        <label for="reservation-product">Produit à réserver :</label>
+                        <select id="reservation-product">
+                            <!-- Les options seront remplies par JavaScript -->
                         </select>
                     </div>
                     
                     <div class="form-group">
-                        <label class="form-label" for="productStock">Stock actuel</label>
-                        <input type="number" id="productStock" class="form-input" min="0" required>
+                        <label for="client-phone">Numéro de téléphone du client :</label>
+                        <input type="tel" id="client-phone" placeholder="Ex: 06 12 34 56 78">
                     </div>
                     
                     <div class="form-group">
-                        <label class="form-label" for="productAlert">Seuil d'alerte</label>
-                        <input type="number" id="productAlert" class="form-input" min="1" required>
-                        <div class="form-hint">Seuil pour les alertes de stock faible</div>
+                        <label for="reservation-notes">Notes (optionnel) :</label>
+                        <textarea id="reservation-notes" rows="2" placeholder="Informations supplémentaires sur le client ou la réservation"></textarea>
                     </div>
+                    
+                    <button class="btn btn-primary btn-block" id="add-reservation">
+                        <i class="fas fa-plus-circle"></i> Ajouter la réservation
+                    </button>
+                    
+                    <div class="reservations-list" id="reservations-list">
+                        <!-- Les réservations seront générées dynamiquement -->
+                    </div>
+                </div>
+                
+                <!-- Onglet Historique -->
+                <div class="tab-content" id="history-tab">
+                    <h2><i class="fas fa-history"></i> Historique des ventes</h2>
                     
                     <div class="form-group">
-                        <label class="form-label" for="productPrice">Prix (zł)</label>
-                        <input type="number" id="productPrice" class="form-input" min="0" step="0.01" required>
-                        <div class="form-hint" id="priceEurHint"></div>
+                        <label for="history-filter">Filtrer par date :</label>
+                        <input type="date" id="history-filter">
                     </div>
                     
-                    <div class="form-group">
-                        <label class="form-label" for="productDiscount">Remise (%)</label>
-                        <input type="number" id="productDiscount" class="form-input" min="0" max="100" value="0">
-                        <div class="form-hint">Pourcentage de remise à appliquer</div>
+                    <div id="sales-history">
+                        <!-- L'historique sera généré dynamiquement -->
+                    </div>
+                </div>
+                
+                <!-- Onglet Ventes Globales -->
+                <div class="tab-content" id="global-sales-tab">
+                    <h2><i class="fas fa-list"></i> Ventes Globales</h2>
+                    
+                    <div class="report-filters">
+                        <div class="report-filter-group">
+                            <label for="global-start-date">Date de début :</label>
+                            <input type="date" id="global-start-date">
+                        </div>
+                        <div class="report-filter-group">
+                            <label for="global-end-date">Date de fin :</label>
+                            <input type="date" id="global-end-date">
+                        </div>
+                        <div class="report-filter-group" style="display: flex; align-items: flex-end;">
+                            <button class="btn btn-primary btn-block" id="apply-global-filter">
+                                <i class="fas fa-filter"></i> Appliquer
+                            </button>
+                        </div>
                     </div>
                     
-                    <div class="modal-actions">
-                        <button type="button" id="cancelBtn" class="app-btn btn-secondary">Annuler</button>
-                        <button type="submit" class="app-btn btn-primary">Enregistrer</button>
+                    <div class="report-summary">
+                        <div class="report-summary-card">
+                            <h3>Total des ventes</h3>
+                            <div class="value" id="global-total-sales">0 €</div>
+                        </div>
+                        <div class="report-summary-card">
+                            <h3>Nombre de transactions</h3>
+                            <div class="value" id="global-transactions">0</div>
+                        </div>
+                        <div class="report-summary-card">
+                            <h3>Produits vendus</h3>
+                            <div class="value" id="global-products-sold">0</div>
+                        </div>
+                        <div class="report-summary-card">
+                            <h3>Panier moyen</h3>
+                            <div class="value" id="global-average-cart">0 €</div>
+                        </div>
                     </div>
-                </form>
+                    
+                    <div class="report-chart">
+                        <h3>Évolution des ventes</h3>
+                        <div class="chart-placeholder">
+                            <i class="fas fa-chart-line"></i> Graphique d'évolution des ventes
+                        </div>
+                    </div>
+                    
+                    <h3 style="margin-top: 20px;">Détail des ventes</h3>
+                    <div class="report-table-container">
+                        <table class="report-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Montant</th>
+                                    <th>Produits</th>
+                                    <th>Quantité</th>
+                                </tr>
+                            </thead>
+                            <tbody id="global-sales-details">
+                                <!-- Les détails seront générés dynamiquement -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Onglet Rapport Mensuel -->
+                <div class="tab-content" id="monthly-report-tab">
+                    <h2><i class="fas fa-chart-bar"></i> Rapport Mensuel des Ventes</h2>
+                    
+                    <div class="report-filters">
+                        <div class="report-filter-group">
+                            <label for="monthly-year">Année :</label>
+                            <select id="monthly-year">
+                                <!-- Les années seront générées dynamiquement -->
+                            </select>
+                        </div>
+                        <div class="report-filter-group">
+                            <label for="monthly-month">Mois :</label>
+                            <select id="monthly-month">
+                                <option value="01">Janvier</option>
+                                <option value="02">Février</option>
+                                <option value="03">Mars</option>
+                                <option value="04">Avril</option>
+                                <option value="05">Mai</option>
+                                <option value="06">Juin</option>
+                                <option value="07">Juillet</option>
+                                <option value="08">Août</option>
+                                <option value="09">Septembre</option>
+                                <option value="10">Octobre</option>
+                                <option value="11">Novembre</option>
+                                <option value="12">Décembre</option>
+                            </select>
+                        </div>
+                        <div class="report-filter-group" style="display: flex; align-items: flex-end;">
+                            <button class="btn btn-primary btn-block" id="apply-monthly-filter">
+                                <i class="fas fa-filter"></i> Appliquer
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="report-summary">
+                        <div class="report-summary-card">
+                            <h3>Ventes du mois</h3>
+                            <div class="value" id="monthly-total-sales">0 €</div>
+                        </div>
+                        <div class="report-summary-card">
+                            <h3>Transactions</h3>
+                            <div class="value" id="monthly-transactions">0</div>
+                        </div>
+                        <div class="report-summary-card">
+                            <h3>Jours d'activité</h3>
+                            <div class="value" id="monthly-active-days">0</div>
+                        </div>
+                        <div class="report-summary-card">
+                            <h3>Meilleur jour</h3>
+                            <div class="value" id="monthly-best-day">0 €</div>
+                        </div>
+                    </div>
+                    
+                    <div class="report-chart">
+                        <h3>Ventes par jour</h3>
+                        <div class="chart-placeholder">
+                            <i class="fas fa-chart-bar"></i> Graphique des ventes par jour
+                        </div>
+                    </div>
+                    
+                    <h3 style="margin-top: 20px;">Top produits du mois</h3>
+                    <div class="report-table-container">
+                        <table class="report-table">
+                            <thead>
+                                <tr>
+                                    <th>Produit</th>
+                                    <th>Quantité vendue</th>
+                                    <th>Chiffre d'affaires</th>
+                                </tr>
+                            </thead>
+                            <tbody id="monthly-top-products">
+                                <!-- Les top produits seront générés dynamiquement -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Onglet Rapport des Stocks -->
+                <div class="tab-content" id="stock-report-tab">
+                    <h2><i class="fas fa-chart-line"></i> Rapport des Niveaux de Stocks</h2>
+                    
+                    <div class="report-filters">
+                        <div class="report-filter-group">
+                            <label for="stock-year">Année :</label>
+                            <select id="stock-year">
+                                <!-- Les années seront générées dynamiquement -->
+                            </select>
+                        </div>
+                        <div class="report-filter-group">
+                            <label for="stock-month">Mois :</label>
+                            <select id="stock-month">
+                                <option value="01">Janvier</option>
+                                <option value="02">Février</option>
+                                <option value="03">Mars</option>
+                                <option value="04">Avril</option>
+                                <option value="05">Mai</option>
+                                <option value="06">Juin</option>
+                                <option value="07">Juillet</option>
+                                <option value="08">Août</option>
+                                <option value="09">Septembre</option>
+                                <option value="10">Octobre</option>
+                                <option value="11">Novembre</option>
+                                <option value="12">Décembre</option>
+                            </select>
+                        </div>
+                        <div class="report-filter-group" style="display: flex; align-items: flex-end;">
+                            <button class="btn btn-primary btn-block" id="apply-stock-filter">
+                                <i class="fas fa-filter"></i> Appliquer
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="report-summary">
+                        <div class="report-summary-card">
+                            <h3>Valeur du stock</h3>
+                            <div class="value" id="stock-report-value">0 €</div>
+                        </div>
+                        <div class="report-summary-card">
+                            <h3>Produits en stock</h3>
+                            <div class="value" id="stock-report-count">0</div>
+                        </div>
+                        <div class="report-summary-card">
+                            <h3>Ruptures de stock</h3>
+                            <div class="value" id="stock-report-outofstock">0</div>
+                        </div>
+                        <div class="report-summary-card">
+                            <h3>Stock faible</h3>
+                            <div class="value" id="stock-report-low">0</div>
+                        </div>
+                    </div>
+                    
+                    <div class="report-chart">
+                        <h3>Évolution du stock</h3>
+                        <div class="chart-placeholder">
+                            <i class="fas fa-chart-area"></i> Graphique d'évolution du stock
+                        </div>
+                    </div>
+                    
+                    <h3 style="margin-top: 20px;">Détail des stocks</h3>
+                    <div class="report-table-container">
+                        <table class="report-table">
+                            <thead>
+                                <tr>
+                                    <th>Produit</th>
+                                    <th>Stock actuel</th>
+                                    <th>Stock début mois</th>
+                                    <th>Ventes du mois</th>
+                                    <th>Variation</th>
+                                </tr>
+                            </thead>
+                            <tbody id="stock-report-details">
+                                <!-- Les détails seront générés dynamiquement -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
-        
-        <!-- Notifications -->
-        <div id="toast" class="toast"></div>
+    </div>
+    
+    <!-- Modal de confirmation de vente -->
+    <div class="modal" id="sale-confirmation-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-check-circle"></i> Vente confirmée</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <p>La vente a été enregistrée avec succès !</p>
+            <p>Montant total : <strong id="sale-confirmation-amount">0.00 €</strong></p>
+            <div class="payment-section" style="margin-top: 20px;">
+                <button class="btn btn-success btn-block" id="close-sale-modal">
+                    <i class="fas fa-thumbs-up"></i> Parfait
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal d'alerte de réservation -->
+    <div class="modal" id="reservation-alert-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-bell"></i> Rappel de réservation</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div id="reservation-alert-content">
+                <!-- Le contenu sera généré dynamiquement -->
+            </div>
+            <div class="payment-section" style="margin-top: 20px;">
+                <button class="btn btn-primary btn-block" id="close-reservation-modal">
+                    <i class="fas fa-check"></i> J'ai compris
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal d'ajout/modification de produit -->
+    <div class="modal" id="product-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="product-modal-title"><i class="fas fa-box"></i> Ajouter un produit</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form id="product-form">
+                <input type="hidden" id="product-id">
+                
+                <div class="form-group">
+                    <label for="product-name">Nom du produit :</label>
+                    <input type="text" id="product-name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="product-category">Catégorie :</label>
+                    <select id="product-category" required>
+                        <option value="">Sélectionnez une catégorie</option>
+                        <option value="Parfum">Parfum</option>
+                        <option value="Cosmétique">Cosmétique</option>
+                    </select>
+                </div>
+                
+                <div class="currency-toggle">
+                    <span>Devise de saisie :</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="price-currency-toggle">
+                        <span class="toggle-slider"></span>
+                    </label>
+                    <span id="price-currency-label">EUR</span>
+                </div>
+                
+                <div class="form-group">
+                    <label for="product-price">Prix :</label>
+                    <input type="number" id="product-price" min="0" step="0.01" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="product-stock">Quantité en stock :</label>
+                    <input type="number" id="product-stock" min="0" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="product-description">Description (optionnel) :</label>
+                    <textarea id="product-description" rows="3"></textarea>
+                </div>
+                
+                <div class="payment-section">
+                    <button type="submit" class="btn btn-success btn-block">
+                        <i class="fas fa-save"></i> Enregistrer
+                    </button>
+                    <button type="button" class="btn btn-danger" id="cancel-product-btn">
+                        <i class="fas fa-times"></i> Annuler
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 
     <script>
@@ -815,10 +1734,10 @@
         // MODIFIEZ CES VALEURS PAR BALLA KONATE
         const SECURITY_CONFIG = {
             // Clé d'accès principale - Changez cette valeur
-            accessKey: "Sarounia1",
+            accessKey: "BallaKonate2024!",
             
             // Code personnel - Changez cette valeur (6 chiffres)
-            personalCode: "223117",
+            personalCode: "010189",
             
             // Nombre maximum de tentatives avant verrouillage
             maxAttempts: 5,
@@ -829,9 +1748,6 @@
             // Durée de session en heures
             sessionDuration: 8
         };
-        
-        // Taux de conversion PLN/EUR (exemple : 1 EUR = 4.32 PLN)
-        const EXCHANGE_RATE = 4.32;
         
         // =============================================
         // SYSTÈME DE SÉCURITÉ
@@ -884,17 +1800,18 @@
             },
             
             showSecurityGate() {
-                document.getElementById('securityGate').style.display = 'block';
+                document.getElementById('securityGate').style.display = 'flex';
                 document.getElementById('appContainer').style.display = 'none';
                 document.getElementById('accessKey').focus();
                 this.updateSecurityWarning();
             },
             
             showLockout() {
+                const warningElement = document.getElementById('securityWarning');
                 const remainingTime = Math.ceil((this.lockUntil - Date.now()) / 60000);
-                document.getElementById('securityWarning').textContent = 
+                document.getElementById('warningText').textContent = 
                     `🔒 Accès temporairement bloqué. Réessayez dans ${remainingTime} minute(s).`;
-                document.getElementById('securityWarning').style.display = 'block';
+                warningElement.style.display = 'block';
                 document.getElementById('accessBtn').disabled = true;
                 
                 // Déverrouiller automatiquement après la période
@@ -908,7 +1825,7 @@
                 const warningElement = document.getElementById('securityWarning');
                 if (this.failedAttempts > 0) {
                     const remainingAttempts = SECURITY_CONFIG.maxAttempts - this.failedAttempts;
-                    warningElement.textContent = 
+                    document.getElementById('warningText').textContent = 
                         `${this.failedAttempts} tentative(s) échouée(s). ${remainingAttempts} tentative(s) restante(s).`;
                     warningElement.style.display = 'block';
                 } else {
@@ -938,7 +1855,6 @@
                     if (this.failedAttempts >= SECURITY_CONFIG.maxAttempts) {
                         this.lockAccess();
                     } else {
-                        errorElement.textContent = 'Identifiants incorrects. Veuillez réessayer.';
                         errorElement.style.display = 'block';
                         this.updateSecurityWarning();
                         this.clearInputs();
@@ -998,6 +1914,7 @@
                 document.addEventListener('mousemove', resetTimer);
                 document.addEventListener('keypress', resetTimer);
                 document.addEventListener('click', resetTimer);
+                document.addEventListener('touchstart', resetTimer);
                 
                 resetTimer();
             },
@@ -1036,606 +1953,1428 @@
                 }, 4000);
             }
         };
-        
+
         // =============================================
-        // APPLICATION DE GESTION DE STOCK
+        // APPLICATION DE GESTION DES VENTES
         // =============================================
         
-        const app = {
-            products: [],
-            editingProductId: null,
-            showInEur: false,
-            
+        // Configuration des devises
+        const CURRENCY_CONFIG = {
+            EUR: { symbol: '€', rate: 1 },
+            PLN: { symbol: 'zl', rate: 4.5 } // 1 EUR = 4.5 PLN (taux fictif, à ajuster)
+        };
+        
+        // Données de l'application
+        let products = [
+            { id: 1, name: "Parfum Fleur de Printemps", price: 75.00, stock: 15, category: "Parfum", description: "Parfum floral printanier" },
+            { id: 2, name: "Crème Hydratante Nuit", price: 45.00, stock: 22, category: "Cosmétique", description: "Crème hydratante pour la nuit" },
+            { id: 3, name: "Eau de Toilette Citrus", price: 60.00, stock: 10, category: "Parfum", description: "Eau de toilette aux notes d'agrumes" },
+            { id: 4, name: "Sérum Anti-Âge", price: 89.00, stock: 8, category: "Cosmétique", description: "Sérum anti-rides et anti-âge" },
+            { id: 5, name: "Parfum Bois Précieux", price: 95.00, stock: 12, category: "Parfum", description: "Parfum aux notes boisées précieuses" },
+            { id: 6, name: "Masque Éclat", price: 25.00, stock: 30, category: "Cosmétique", description: "Masque pour un teint éclatant" },
+            { id: 7, name: "Eau de Parfum Oriental", price: 110.00, stock: 5, category: "Parfum", description: "Parfum aux notes orientales" },
+            { id: 8, name: "Gommage Doux", price: 32.00, stock: 18, category: "Cosmétique", description: "Gommage doux pour le visage" }
+        ];
+        
+        let cart = [];
+        let reservations = [];
+        let salesHistory = [];
+        let globalDiscount = 0;
+        let discountType = 'global'; // 'global' or 'individual'
+        let currentCurrency = 'EUR'; // Devise d'affichage par défaut
+        let priceInputCurrency = 'EUR'; // Devise de saisie des prix
+
+        let app = {
             init() {
-                // Charger les produits depuis le stockage local
-                this.loadProducts();
+                // Initialiser la date du jour
+                const today = new Date().toISOString().split('T')[0];
+                const saleDateInput = document.getElementById('sale-date');
+                if (saleDateInput) saleDateInput.value = today;
+                
+                const historyFilter = document.getElementById('history-filter');
+                if (historyFilter) historyFilter.value = today;
+                
+                // Initialiser les dates pour les rapports
+                this.initReportDates();
+                
+                // Charger les données depuis le localStorage si disponibles
+                this.loadData();
+                
+                // Charger la devise depuis le localStorage
+                const savedCurrency = localStorage.getItem('currentCurrency');
+                if (savedCurrency) {
+                    currentCurrency = savedCurrency;
+                }
+                
+                // Mettre à jour l'interface de sélection de devise
+                this.updateCurrencySelector();
                 
                 // Afficher les produits
-                this.renderStockTable();
+                this.renderProducts();
+                this.renderStockProducts();
                 
-                // Mettre à jour les indicateurs
-                this.updateKPIs();
+                // Mettre à jour les statistiques
+                this.updateStats();
                 
                 // Configurer les écouteurs d'événements
                 this.setupEventListeners();
                 
-                // Configurer les fonctionnalités de synchronisation
-                this.setupSyncFeatures();
+                // Vérifier les réservations pour les alertes
+                this.checkReservationAlerts();
                 
-                // Mettre à jour l'affichage du taux de change
-                this.updateExchangeRateDisplay();
+                // Générer les rapports initiaux
+                this.generateGlobalSalesReport();
+                this.generateMonthlyReport();
+                this.generateStockReport();
             },
             
-            loadProducts() {
-                const storedProducts = localStorage.getItem('perfumeriaProducts');
-                if (storedProducts) {
-                    this.products = JSON.parse(storedProducts);
-                } else {
-                    // Données d'exemple en złoty
-                    this.products = [
-                        {
-                            id: this.generateId(),
-                            name: "Chanel N°5 Eau de Parfum",
-                            sku: "CHANEL-N5-EDP-50ML",
-                            category: "Parfum Femme",
-                            stock: 15,
-                            alertThreshold: 5,
-                            price: 518.40, // 120 EUR * 4.32
-                            discount: 10,
-                            createdAt: new Date().toISOString()
-                        },
-                        {
-                            id: this.generateId(),
-                            name: "Dior Sauvage Eau de Toilette",
-                            sku: "DIOR-SAUVAGE-EDT-100ML",
-                            category: "Parfum Homme",
-                            stock: 8,
-                            alertThreshold: 5,
-                            price: 410.40, // 95 EUR * 4.32
-                            discount: 0,
-                            createdAt: new Date().toISOString()
-                        },
-                        {
-                            id: this.generateId(),
-                            name: "Jo Malone Wood Sage & Sea Salt",
-                            sku: "JOMALONE-WOODSAGE-EDC-100ML",
-                            category: "Parfum Unisexe",
-                            stock: 3,
-                            alertThreshold: 5,
-                            price: 475.20, // 110 EUR * 4.32
-                            discount: 15,
-                            createdAt: new Date().toISOString()
+            initReportDates() {
+                // Initialiser les dates pour les rapports globaux
+                const now = new Date();
+                const firstDay = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
+                const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString().split('T')[0];
+                
+                const globalStartDate = document.getElementById('global-start-date');
+                const globalEndDate = document.getElementById('global-end-date');
+                if (globalStartDate) globalStartDate.value = firstDay;
+                if (globalEndDate) globalEndDate.value = lastDay;
+                
+                // Initialiser les sélecteurs d'année
+                const currentYear = now.getFullYear();
+                const yearSelectors = [
+                    document.getElementById('monthly-year'),
+                    document.getElementById('stock-year')
+                ];
+                
+                yearSelectors.forEach(selector => {
+                    if (selector) {
+                        // Ajouter les 5 dernières années
+                        for (let i = currentYear - 2; i <= currentYear + 2; i++) {
+                            const option = document.createElement('option');
+                            option.value = i;
+                            option.textContent = i;
+                            if (i === currentYear) option.selected = true;
+                            selector.appendChild(option);
                         }
-                    ];
-                    this.saveProducts();
+                    }
+                });
+                
+                // Initialiser le sélecteur de mois avec le mois actuel
+                const currentMonth = (now.getMonth() + 1).toString().padStart(2, '0');
+                const monthSelectors = [
+                    document.getElementById('monthly-month'),
+                    document.getElementById('stock-month')
+                ];
+                
+                monthSelectors.forEach(selector => {
+                    if (selector) {
+                        selector.value = currentMonth;
+                    }
+                });
+            },
+            
+            loadData() {
+                const savedProducts = localStorage.getItem('perfumeProducts');
+                const savedReservations = localStorage.getItem('perfumeReservations');
+                const savedSalesHistory = localStorage.getItem('perfumeSalesHistory');
+                
+                if (savedProducts) products = JSON.parse(savedProducts);
+                if (savedReservations) reservations = JSON.parse(savedReservations);
+                if (savedSalesHistory) salesHistory = JSON.parse(savedSalesHistory);
+            },
+            
+            saveData() {
+                localStorage.setItem('perfumeProducts', JSON.stringify(products));
+                localStorage.setItem('perfumeReservations', JSON.stringify(reservations));
+                localStorage.setItem('perfumeSalesHistory', JSON.stringify(salesHistory));
+                localStorage.setItem('currentCurrency', currentCurrency);
+            },
+            
+            // Fonctions de conversion de devise
+            convertPrice(price, fromCurrency, toCurrency) {
+                if (fromCurrency === toCurrency) return price;
+                
+                const fromRate = CURRENCY_CONFIG[fromCurrency].rate;
+                const toRate = CURRENCY_CONFIG[toCurrency].rate;
+                
+                return (price / fromRate) * toRate;
+            },
+            
+            formatPrice(price, currency = currentCurrency) {
+                const symbol = CURRENCY_CONFIG[currency].symbol;
+                return `${price.toFixed(2)} ${symbol}`;
+            },
+            
+            updateCurrencySelector() {
+                const currencyButtons = document.querySelectorAll('.currency-btn');
+                currencyButtons.forEach(button => {
+                    if (button.dataset.currency === currentCurrency) {
+                        button.classList.add('active');
+                    } else {
+                        button.classList.remove('active');
+                    }
+                });
+                
+                // Mettre à jour tous les affichages de prix
+                this.renderProducts();
+                this.renderStockProducts();
+                this.updateCart();
+                this.updateStats();
+                this.renderSalesHistory();
+                this.generateGlobalSalesReport();
+                this.generateMonthlyReport();
+                this.generateStockReport();
+            },
+            
+            renderProducts() {
+                const productList = document.getElementById('product-list');
+                if (!productList) return;
+                
+                productList.innerHTML = '';
+                
+                if (products.length === 0) {
+                    productList.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-box-open"></i>
+                            <p>Aucun produit en stock</p>
+                            <p class="text-muted">Ajoutez des produits pour commencer à vendre</p>
+                        </div>
+                    `;
+                    return;
                 }
+                
+                products.forEach(product => {
+                    if (product.stock > 0) {
+                        const productItem = document.createElement('div');
+                        productItem.className = 'product-item';
+                        
+                        const displayPrice = this.convertPrice(product.price, 'EUR', currentCurrency);
+                        
+                        productItem.innerHTML = `
+                            <div class="product-info">
+                                <div class="product-name">${product.name}</div>
+                                <div class="product-details">
+                                    <span class="product-price">${this.formatPrice(displayPrice)}</span>
+                                    <span class="product-stock">${product.stock} en stock</span>
+                                    <span class="product-category">${product.category}</span>
+                                </div>
+                            </div>
+                            <div class="product-actions">
+                                <button class="btn btn-primary btn-small add-to-cart" data-id="${product.id}">
+                                    <i class="fas fa-cart-plus"></i> Vendre
+                                </button>
+                                <button class="btn btn-secondary btn-small reserve-product" data-id="${product.id}">
+                                    <i class="far fa-calendar-check"></i> Réserver
+                                </button>
+                            </div>
+                        `;
+                        
+                        productList.appendChild(productItem);
+                    }
+                });
+                
+                // Mettre à jour la liste des produits pour les réservations
+                this.updateReservationProductList();
             },
             
-            saveProducts() {
-                localStorage.setItem('perfumeriaProducts', JSON.stringify(this.products));
+            renderStockProducts() {
+                const stockProductList = document.getElementById('stock-product-list');
+                if (!stockProductList) return;
+                
+                stockProductList.innerHTML = '';
+                
+                if (products.length === 0) {
+                    stockProductList.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-boxes"></i>
+                            <p>Aucun produit enregistré</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                products.forEach(product => {
+                    const productItem = document.createElement('div');
+                    productItem.className = 'product-item';
+                    
+                    const stockStatus = product.stock > 5 ? 'text-success' : (product.stock > 0 ? 'text-warning' : 'text-danger');
+                    const stockIcon = product.stock > 5 ? 'fa-check-circle' : (product.stock > 0 ? 'fa-exclamation-circle' : 'fa-times-circle');
+                    
+                    const displayPrice = this.convertPrice(product.price, 'EUR', currentCurrency);
+                    
+                    productItem.innerHTML = `
+                        <div class="product-info">
+                            <div class="product-name">${product.name}</div>
+                            <div class="product-details">
+                                <span class="product-price">${this.formatPrice(displayPrice)}</span>
+                                <span class="product-stock ${stockStatus}">
+                                    <i class="fas ${stockIcon}"></i> ${product.stock} en stock
+                                </span>
+                                <span class="product-category">${product.category}</span>
+                            </div>
+                            ${product.description ? `<div style="margin-top: 5px; font-size: 0.85rem; color: var(--gray);">${product.description}</div>` : ''}
+                        </div>
+                        <div class="product-actions">
+                            <button class="btn btn-warning btn-small edit-product" data-id="${product.id}">
+                                <i class="fas fa-edit"></i> Modifier
+                            </button>
+                            <button class="btn btn-danger btn-small delete-product" data-id="${product.id}">
+                                <i class="fas fa-trash"></i> Supprimer
+                            </button>
+                        </div>
+                    `;
+                    
+                    stockProductList.appendChild(productItem);
+                });
+                
+                // Ajouter les écouteurs d'événements pour les boutons de modification de stock
+                document.querySelectorAll('.edit-product').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const productId = parseInt(this.dataset.id);
+                        app.editProduct(productId);
+                    });
+                });
+                
+                document.querySelectorAll('.delete-product').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const productId = parseInt(this.dataset.id);
+                        app.deleteProduct(productId);
+                    });
+                });
             },
             
-            calculateFinalPrice(price, discount) {
-                return price * (1 - discount / 100);
+            updateReservationProductList() {
+                const reservationProductSelect = document.getElementById('reservation-product');
+                if (!reservationProductSelect) return;
+                
+                reservationProductSelect.innerHTML = '';
+                
+                // Option par défaut
+                const defaultOption = document.createElement('option');
+                defaultOption.value = '';
+                defaultOption.textContent = 'Sélectionnez un produit';
+                defaultOption.disabled = true;
+                defaultOption.selected = true;
+                reservationProductSelect.appendChild(defaultOption);
+                
+                products.forEach(product => {
+                    if (product.stock > 0) {
+                        const option = document.createElement('option');
+                        option.value = product.id;
+                        option.textContent = `${product.name} (${product.stock} en stock)`;
+                        reservationProductSelect.appendChild(option);
+                    }
+                });
             },
             
-            convertToEur(priceZl) {
-                return priceZl / EXCHANGE_RATE;
+            updateStats() {
+                // Ventes du jour
+                const today = new Date().toISOString().split('T')[0];
+                const dailySalesEUR = salesHistory
+                    .filter(sale => sale.date === today)
+                    .reduce((total, sale) => total + sale.amount, 0);
+                const dailySales = this.convertPrice(dailySalesEUR, 'EUR', currentCurrency);
+                const dailySalesElement = document.getElementById('daily-sales');
+                if (dailySalesElement) dailySalesElement.textContent = this.formatPrice(dailySales);
+                
+                // Ventes totales
+                const totalSalesEUR = salesHistory.reduce((total, sale) => total + sale.amount, 0);
+                const totalSales = this.convertPrice(totalSalesEUR, 'EUR', currentCurrency);
+                const totalSalesElement = document.getElementById('total-sales');
+                if (totalSalesElement) totalSalesElement.textContent = this.formatPrice(totalSales);
+                
+                // Produits en stock
+                const totalStock = products.reduce((total, product) => total + product.stock, 0);
+                const totalStockElement = document.getElementById('total-stock');
+                if (totalStockElement) totalStockElement.textContent = totalStock;
+                
+                // Valeur du stock
+                const stockValueEUR = products.reduce((total, product) => total + (product.price * product.stock), 0);
+                const stockValue = this.convertPrice(stockValueEUR, 'EUR', currentCurrency);
+                const stockValueElement = document.getElementById('stock-value');
+                if (stockValueElement) stockValueElement.textContent = this.formatPrice(stockValue);
+                
+                const totalStockValueElement = document.getElementById('total-stock-value');
+                if (totalStockValueElement) totalStockValueElement.textContent = this.formatPrice(stockValue);
+                
+                // Mettre à jour l'historique des ventes
+                this.renderSalesHistory();
+                
+                // Mettre à jour la liste des réservations
+                this.renderReservations();
             },
             
-            convertToZl(priceEur) {
-                return priceEur * EXCHANGE_RATE;
+            setupEventListeners() {
+                // Navigation par onglets
+                document.querySelectorAll('.tab').forEach(tab => {
+                    tab.addEventListener('click', function() {
+                        // Désactiver tous les onglets
+                        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                        
+                        // Activer l'onglet sélectionné
+                        this.classList.add('active');
+                        const tabId = `${this.dataset.tab}-tab`;
+                        const tabContent = document.getElementById(tabId);
+                        if (tabContent) tabContent.classList.add('active');
+                    });
+                });
+                
+                // Sélecteur de devise
+                document.querySelectorAll('.currency-btn').forEach(button => {
+                    button.addEventListener('click', function() {
+                        currentCurrency = this.dataset.currency;
+                        app.updateCurrencySelector();
+                        app.saveData();
+                    });
+                });
+                
+                // Toggle de devise pour la saisie des prix
+                const priceCurrencyToggle = document.getElementById('price-currency-toggle');
+                const priceCurrencyLabel = document.getElementById('price-currency-label');
+                if (priceCurrencyToggle && priceCurrencyLabel) {
+                    priceCurrencyToggle.addEventListener('change', function() {
+                        priceInputCurrency = this.checked ? 'PLN' : 'EUR';
+                        priceCurrencyLabel.textContent = priceInputCurrency;
+                        
+                        // Convertir la valeur actuelle si le champ de prix n'est pas vide
+                        const priceInput = document.getElementById('product-price');
+                        if (priceInput && priceInput.value) {
+                            const currentPrice = parseFloat(priceInput.value);
+                            const convertedPrice = app.convertPrice(currentPrice, 
+                                priceInputCurrency === 'PLN' ? 'EUR' : 'PLN', 
+                                priceInputCurrency);
+                            priceInput.value = convertedPrice.toFixed(2);
+                        }
+                    });
+                }
+                
+                // Ajouter au panier
+                document.addEventListener('click', function(e) {
+                    if (e.target.classList.contains('add-to-cart') || e.target.closest('.add-to-cart')) {
+                        const button = e.target.classList.contains('add-to-cart') ? e.target : e.target.closest('.add-to-cart');
+                        const productId = parseInt(button.dataset.id);
+                        app.addToCart(productId);
+                    }
+                });
+                
+                // Réserver un produit
+                document.addEventListener('click', function(e) {
+                    if (e.target.classList.contains('reserve-product') || e.target.closest('.reserve-product')) {
+                        const button = e.target.classList.contains('reserve-product') ? e.target : e.target.closest('.reserve-product');
+                        const productId = parseInt(button.dataset.id);
+                        const reservationProductSelect = document.getElementById('reservation-product');
+                        if (reservationProductSelect) reservationProductSelect.value = productId;
+                        const reservationsTab = document.querySelector('.tab[data-tab="reservations"]');
+                        if (reservationsTab) reservationsTab.click();
+                    }
+                });
+                
+                // Options de remise
+                document.querySelectorAll('.discount-option').forEach(option => {
+                    option.addEventListener('click', function() {
+                        document.querySelectorAll('.discount-option').forEach(o => o.classList.remove('active'));
+                        this.classList.add('active');
+                        discountType = this.dataset.type;
+                    });
+                });
+                
+                // Appliquer une remise
+                const applyDiscountBtn = document.getElementById('apply-discount');
+                if (applyDiscountBtn) {
+                    applyDiscountBtn.addEventListener('click', function() {
+                        const discountInput = document.getElementById('global-discount');
+                        const discountValue = parseFloat(discountInput.value) || 0;
+                        
+                        if (discountValue < 0 || discountValue > 100) {
+                            alert('La remise doit être comprise entre 0 et 100%.');
+                            return;
+                        }
+                        
+                        if (discountType === 'global') {
+                            globalDiscount = discountValue;
+                        } else if (discountType === 'individual' && cart.length > 0) {
+                            // Appliquer la remise à tous les articles du panier
+                            cart.forEach(item => {
+                                item.discount = discountValue;
+                            });
+                        }
+                        
+                        app.updateCart();
+                    });
+                }
+                
+                // Valider le paiement
+                const validatePaymentBtn = document.getElementById('validate-payment');
+                if (validatePaymentBtn) {
+                    validatePaymentBtn.addEventListener('click', function() {
+                        if (cart.length === 0) {
+                            alert('Le panier est vide. Ajoutez des produits avant de valider le paiement.');
+                            return;
+                        }
+                        
+                        app.validatePayment();
+                    });
+                }
+                
+                // Vider le panier
+                const clearCartBtn = document.getElementById('clear-cart');
+                if (clearCartBtn) {
+                    clearCartBtn.addEventListener('click', function() {
+                        if (cart.length === 0) {
+                            alert('Le panier est déjà vide.');
+                            return;
+                        }
+                        
+                        if (confirm('Êtes-vous sûr de vouloir vider le panier ?')) {
+                            cart = [];
+                            globalDiscount = 0;
+                            const globalDiscountInput = document.getElementById('global-discount');
+                            if (globalDiscountInput) globalDiscountInput.value = '';
+                            app.updateCart();
+                        }
+                    });
+                }
+                
+                // Ajouter une réservation
+                const addReservationBtn = document.getElementById('add-reservation');
+                if (addReservationBtn) {
+                    addReservationBtn.addEventListener('click', function() {
+                        app.addReservation();
+                    });
+                }
+                
+                // Filtrer l'historique
+                const historyFilter = document.getElementById('history-filter');
+                if (historyFilter) {
+                    historyFilter.addEventListener('change', function() {
+                        app.renderSalesHistory();
+                    });
+                }
+                
+                // Gestion des produits
+                const addProductBtn = document.getElementById('add-product-btn');
+                if (addProductBtn) {
+                    addProductBtn.addEventListener('click', function() {
+                        app.openProductModal();
+                    });
+                }
+                
+                const productForm = document.getElementById('product-form');
+                if (productForm) {
+                    productForm.addEventListener('submit', function(e) {
+                        e.preventDefault();
+                        app.saveProduct();
+                    });
+                }
+                
+                const cancelProductBtn = document.getElementById('cancel-product-btn');
+                if (cancelProductBtn) {
+                    cancelProductBtn.addEventListener('click', function() {
+                        const productModal = document.getElementById('product-modal');
+                        if (productModal) productModal.style.display = 'none';
+                    });
+                }
+                
+                // Fermer les modales
+                document.querySelectorAll('.close-modal').forEach(button => {
+                    button.addEventListener('click', function() {
+                        document.querySelectorAll('.modal').forEach(modal => {
+                            modal.style.display = 'none';
+                        });
+                    });
+                });
+                
+                const closeSaleModalBtn = document.getElementById('close-sale-modal');
+                if (closeSaleModalBtn) {
+                    closeSaleModalBtn.addEventListener('click', function() {
+                        const saleConfirmationModal = document.getElementById('sale-confirmation-modal');
+                        if (saleConfirmationModal) saleConfirmationModal.style.display = 'none';
+                    });
+                }
+                
+                const closeReservationModalBtn = document.getElementById('close-reservation-modal');
+                if (closeReservationModalBtn) {
+                    closeReservationModalBtn.addEventListener('click', function() {
+                        const reservationAlertModal = document.getElementById('reservation-alert-modal');
+                        if (reservationAlertModal) reservationAlertModal.style.display = 'none';
+                    });
+                }
+                
+                // Rapports
+                const applyGlobalFilterBtn = document.getElementById('apply-global-filter');
+                if (applyGlobalFilterBtn) {
+                    applyGlobalFilterBtn.addEventListener('click', function() {
+                        app.generateGlobalSalesReport();
+                    });
+                }
+                
+                const applyMonthlyFilterBtn = document.getElementById('apply-monthly-filter');
+                if (applyMonthlyFilterBtn) {
+                    applyMonthlyFilterBtn.addEventListener('click', function() {
+                        app.generateMonthlyReport();
+                    });
+                }
+                
+                const applyStockFilterBtn = document.getElementById('apply-stock-filter');
+                if (applyStockFilterBtn) {
+                    applyStockFilterBtn.addEventListener('click', function() {
+                        app.generateStockReport();
+                    });
+                }
+                
+                // Fermer les modales en cliquant à l'extérieur
+                window.addEventListener('click', function(e) {
+                    if (e.target.classList.contains('modal')) {
+                        e.target.style.display = 'none';
+                    }
+                });
+                
+                // Gestion des événements tactiles pour mobile
+                document.addEventListener('touchstart', function() {}, {passive: true});
             },
             
-            formatPrice(price, currency = 'zl') {
-                if (currency === 'eur') {
-                    return `${price.toFixed(2)} €`;
+            addToCart(productId) {
+                const product = products.find(p => p.id === productId);
+                
+                if (!product) return;
+                
+                if (product.stock <= 0) {
+                    alert('Ce produit est en rupture de stock.');
+                    return;
+                }
+                
+                const existingItem = cart.find(item => item.product.id === productId);
+                
+                if (existingItem) {
+                    if (existingItem.quantity >= product.stock) {
+                        alert(`Quantité maximale disponible pour ce produit : ${product.stock}`);
+                        return;
+                    }
+                    existingItem.quantity += 1;
                 } else {
-                    return `${price.toFixed(2)} zł`;
+                    cart.push({
+                        product: product,
+                        quantity: 1,
+                        discount: 0
+                    });
+                }
+                
+                this.updateCart();
+                
+                // Feedback visuel
+                const button = document.querySelector(`.add-to-cart[data-id="${productId}"]`);
+                if (button) {
+                    const originalHTML = button.innerHTML;
+                    button.innerHTML = '<i class="fas fa-check"></i> Ajouté';
+                    button.style.backgroundColor = 'var(--success)';
+                    
+                    setTimeout(() => {
+                        button.innerHTML = originalHTML;
+                        button.style.backgroundColor = '';
+                    }, 1000);
                 }
             },
             
-            toggleCurrency() {
-                this.showInEur = !this.showInEur;
-                this.renderStockTable();
-                this.updateKPIs();
-                this.updateExchangeRateDisplay();
+            updateCart() {
+                const cartItems = document.getElementById('cart-items');
+                const cartTotal = document.getElementById('cart-total');
                 
-                // Mettre à jour le texte du bouton
-                const btn = document.getElementById('toggleCurrencyBtn');
-                btn.textContent = this.showInEur ? 'Afficher en zł' : 'Afficher en EUR';
+                if (!cartItems) return;
                 
-                security.showToast(this.showInEur ? 'Affichage en euros activé' : 'Affichage en złoty activé');
+                if (cart.length === 0) {
+                    cartItems.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-shopping-cart"></i>
+                            <p>Votre panier est vide</p>
+                            <p class="text-muted">Ajoutez des produits pour commencer une vente</p>
+                        </div>
+                    `;
+                    if (cartTotal) cartTotal.textContent = this.formatPrice(0);
+                    return;
+                }
+                
+                cartItems.innerHTML = '';
+                
+                let subtotalEUR = 0;
+                
+                cart.forEach((item, index) => {
+                    const itemTotalEUR = item.product.price * item.quantity * (1 - item.discount / 100);
+                    subtotalEUR += itemTotalEUR;
+                    
+                    const itemTotal = this.convertPrice(itemTotalEUR, 'EUR', currentCurrency);
+                    const productPrice = this.convertPrice(item.product.price, 'EUR', currentCurrency);
+                    
+                    const cartItem = document.createElement('div');
+                    cartItem.className = 'cart-item';
+                    
+                    cartItem.innerHTML = `
+                        <div class="cart-item-info">
+                            <div class="cart-item-name">${item.product.name}</div>
+                            <div class="cart-item-details">
+                                ${this.formatPrice(productPrice)} x ${item.quantity}
+                                ${item.discount > 0 ? ` | -${item.discount}%` : ''}
+                            </div>
+                        </div>
+                        <div class="cart-item-actions">
+                            <div style="font-weight: bold; margin-bottom: 5px;">${this.formatPrice(itemTotal)}</div>
+                            <div>
+                                <button class="btn btn-primary btn-small edit-item" data-index="${index}">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-danger btn-small remove-item" data-index="${index}">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    
+                    cartItems.appendChild(cartItem);
+                });
+                
+                // Appliquer la remise globale
+                const totalAfterDiscountEUR = subtotalEUR * (1 - globalDiscount / 100);
+                const totalAfterDiscount = this.convertPrice(totalAfterDiscountEUR, 'EUR', currentCurrency);
+                if (cartTotal) cartTotal.textContent = this.formatPrice(totalAfterDiscount);
+                
+                // Ajouter les écouteurs d'événements pour les boutons du panier
+                document.querySelectorAll('.remove-item').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const index = parseInt(this.dataset.index);
+                        cart.splice(index, 1);
+                        app.updateCart();
+                    });
+                });
+                
+                document.querySelectorAll('.edit-item').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const index = parseInt(this.dataset.index);
+                        app.editCartItem(index);
+                    });
+                });
             },
             
-            updateExchangeRateDisplay() {
-                const priceInput = document.getElementById('productPrice');
-                const priceHint = document.getElementById('priceEurHint');
+            editCartItem(index) {
+                const item = cart[index];
+                const newQuantity = prompt(`Modifier la quantité pour "${item.product.name}" :`, item.quantity);
                 
-                if (priceInput.value) {
-                    const priceZl = parseFloat(priceInput.value);
-                    const priceEur = this.convertToEur(priceZl);
-                    priceHint.textContent = `≈ ${this.formatPrice(priceEur, 'eur')} (1 EUR = ${EXCHANGE_RATE} PLN)`;
+                if (newQuantity !== null) {
+                    const quantity = parseInt(newQuantity);
+                    
+                    if (isNaN(quantity) || quantity < 1) {
+                        alert('Veuillez entrer une quantité valide.');
+                        return;
+                    }
+                    
+                    if (quantity > item.product.stock) {
+                        alert(`Quantité demandée non disponible. Stock actuel : ${item.product.stock}`);
+                        return;
+                    }
+                    
+                    item.quantity = quantity;
+                    
+                    if (discountType === 'individual') {
+                        const discount = prompt(`Remise pour "${item.product.name}" (en %) :`, item.discount);
+                        
+                        if (discount !== null) {
+                            const discountValue = parseFloat(discount);
+                            
+                            if (isNaN(discountValue) || discountValue < 0 || discountValue > 100) {
+                                alert('Veuillez entrer une remise valide (entre 0 et 100).');
+                                return;
+                            }
+                            
+                            item.discount = discountValue;
+                        }
+                    }
+                    
+                    this.updateCart();
+                }
+            },
+            
+            validatePayment() {
+                // Vérifier le stock
+                for (const item of cart) {
+                    if (item.quantity > item.product.stock) {
+                        alert(`Stock insuffisant pour "${item.product.name}". Stock actuel : ${item.product.stock}`);
+                        return;
+                    }
+                }
+                
+                // Calculer le montant total
+                let subtotalEUR = 0;
+                cart.forEach(item => {
+                    subtotalEUR += item.product.price * item.quantity * (1 - item.discount / 100);
+                });
+                
+                const totalEUR = subtotalEUR * (1 - globalDiscount / 100);
+                const total = this.convertPrice(totalEUR, 'EUR', currentCurrency);
+                
+                // Mettre à jour le stock
+                cart.forEach(item => {
+                    const product = products.find(p => p.id === item.product.id);
+                    if (product) {
+                        product.stock -= item.quantity;
+                    }
+                });
+                
+                // Enregistrer la vente dans l'historique
+                const saleDateInput = document.getElementById('sale-date');
+                const saleDate = saleDateInput ? saleDateInput.value : new Date().toISOString().split('T')[0];
+                salesHistory.push({
+                    date: saleDate,
+                    amount: totalEUR,
+                    items: [...cart]
+                });
+                
+                // Afficher la confirmation
+                const saleConfirmationAmount = document.getElementById('sale-confirmation-amount');
+                if (saleConfirmationAmount) saleConfirmationAmount.textContent = this.formatPrice(total);
+                
+                const saleConfirmationModal = document.getElementById('sale-confirmation-modal');
+                if (saleConfirmationModal) saleConfirmationModal.style.display = 'flex';
+                
+                // Réinitialiser le panier
+                cart = [];
+                globalDiscount = 0;
+                const globalDiscountInput = document.getElementById('global-discount');
+                if (globalDiscountInput) globalDiscountInput.value = '';
+                
+                // Mettre à jour l'interface
+                this.updateCart();
+                this.renderProducts();
+                this.renderStockProducts();
+                this.updateStats();
+                this.saveData();
+                
+                // Regénérer les rapports
+                this.generateGlobalSalesReport();
+                this.generateMonthlyReport();
+                this.generateStockReport();
+            },
+            
+            addReservation() {
+                const reservationProductSelect = document.getElementById('reservation-product');
+                const clientPhoneInput = document.getElementById('client-phone');
+                const reservationNotesInput = document.getElementById('reservation-notes');
+                
+                if (!reservationProductSelect || !clientPhoneInput) return;
+                
+                const productId = parseInt(reservationProductSelect.value);
+                const phone = clientPhoneInput.value;
+                const notes = reservationNotesInput ? reservationNotesInput.value : '';
+                
+                if (!productId || !phone) {
+                    alert('Veuillez sélectionner un produit et saisir un numéro de téléphone.');
+                    return;
+                }
+                
+                // Validation du numéro de téléphone (simplifiée)
+                const phoneRegex = /^[0-9]{10}$/;
+                const cleanPhone = phone.replace(/\s/g, '');
+                
+                if (!phoneRegex.test(cleanPhone)) {
+                    alert('Veuillez saisir un numéro de téléphone valide (10 chiffres).');
+                    return;
+                }
+                
+                const product = products.find(p => p.id === productId);
+                
+                if (!product) {
+                    alert('Produit non trouvé.');
+                    return;
+                }
+                
+                if (product.stock <= 0) {
+                    alert('Ce produit est en rupture de stock.');
+                    return;
+                }
+                
+                // Vérifier si une réservation existe déjà pour ce produit et ce numéro
+                const existingReservation = reservations.find(r => 
+                    r.productId === productId && r.phone === cleanPhone && r.status === 'active');
+                    
+                if (existingReservation) {
+                    alert('Une réservation active existe déjà pour ce produit et ce numéro de téléphone.');
+                    return;
+                }
+                
+                // Créer la réservation
+                const reservation = {
+                    id: Date.now(),
+                    productId: productId,
+                    productName: product.name,
+                    phone: cleanPhone,
+                    notes: notes,
+                    date: new Date().toISOString().split('T')[0],
+                    status: 'active'
+                };
+                
+                reservations.push(reservation);
+                
+                // Réinitialiser le formulaire
+                reservationProductSelect.value = '';
+                clientPhoneInput.value = '';
+                if (reservationNotesInput) reservationNotesInput.value = '';
+                
+                // Mettre à jour l'interface
+                this.updateStats();
+                this.saveData();
+                
+                // Feedback
+                alert('Réservation ajoutée avec succès !');
+            },
+            
+            renderReservations() {
+                const reservationsList = document.getElementById('reservations-list');
+                if (!reservationsList) return;
+                
+                reservationsList.innerHTML = '';
+                
+                const activeReservations = reservations.filter(r => r.status === 'active');
+                
+                if (activeReservations.length === 0) {
+                    reservationsList.innerHTML = `
+                        <div class="empty-state">
+                            <i class="far fa-calendar-check"></i>
+                            <p>Aucune réservation active</p>
+                            <p class="text-muted">Les réservations apparaîtront ici</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                activeReservations.forEach(reservation => {
+                    const reservationItem = document.createElement('div');
+                    reservationItem.className = 'reservation-item';
+                    
+                    reservationItem.innerHTML = `
+                        <div class="reservation-info">
+                            <h4>${reservation.productName}</h4>
+                            <p><i class="fas fa-phone"></i> ${this.formatPhoneNumber(reservation.phone)}</p>
+                            <p><i class="far fa-calendar"></i> Réservé le ${reservation.date}</p>
+                            ${reservation.notes ? `<p><i class="fas fa-sticky-note"></i> ${reservation.notes}</p>` : ''}
+                        </div>
+                        <div class="reservation-actions">
+                            <button class="btn btn-success btn-small complete-reservation" data-id="${reservation.id}">
+                                <i class="fas fa-cash-register"></i> Vendre
+                            </button>
+                            <button class="btn btn-danger btn-small cancel-reservation" data-id="${reservation.id}">
+                                <i class="fas fa-times"></i> Annuler
+                            </button>
+                        </div>
+                    `;
+                    
+                    reservationsList.appendChild(reservationItem);
+                });
+                
+                // Ajouter les écouteurs d'événements pour les boutons de réservation
+                document.querySelectorAll('.complete-reservation').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const reservationId = parseInt(this.dataset.id);
+                        app.completeReservation(reservationId);
+                    });
+                });
+                
+                document.querySelectorAll('.cancel-reservation').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const reservationId = parseInt(this.dataset.id);
+                        app.cancelReservation(reservationId);
+                    });
+                });
+            },
+            
+            formatPhoneNumber(phone) {
+                return phone.replace(/(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/, '$1 $2 $3 $4 $5');
+            },
+            
+            completeReservation(reservationId) {
+                const reservationIndex = reservations.findIndex(r => r.id === reservationId);
+                
+                if (reservationIndex === -1) return;
+                
+                const reservation = reservations[reservationIndex];
+                const product = products.find(p => p.id === reservation.productId);
+                
+                if (!product) {
+                    alert('Produit non trouvé.');
+                    return;
+                }
+                
+                if (product.stock <= 0) {
+                    alert('Ce produit est en rupture de stock.');
+                    return;
+                }
+                
+                // Ajouter au panier
+                this.addToCart(product.id);
+                
+                // Marquer la réservation comme complétée
+                reservations[reservationIndex].status = 'completed';
+                
+                // Mettre à jour l'interface
+                this.updateStats();
+                this.saveData();
+                
+                alert('Réservation complétée. Le produit a été ajouté au panier.');
+            },
+            
+            cancelReservation(reservationId) {
+                if (confirm('Êtes-vous sûr de vouloir annuler cette réservation ?')) {
+                    const reservationIndex = reservations.findIndex(r => r.id === reservationId);
+                    
+                    if (reservationIndex !== -1) {
+                        reservations[reservationIndex].status = 'cancelled';
+                        
+                        // Mettre à jour l'interface
+                        this.updateStats();
+                        this.saveData();
+                    }
+                }
+            },
+            
+            renderSalesHistory() {
+                const salesHistoryElement = document.getElementById('sales-history');
+                if (!salesHistoryElement) return;
+                
+                salesHistoryElement.innerHTML = '';
+                
+                const historyFilter = document.getElementById('history-filter');
+                const filterDate = historyFilter ? historyFilter.value : '';
+                const filteredSales = filterDate ? 
+                    salesHistory.filter(sale => sale.date === filterDate) : 
+                    salesHistory;
+                
+                if (filteredSales.length === 0) {
+                    salesHistoryElement.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-receipt"></i>
+                            <p>Aucune vente pour cette date</p>
+                            <p class="text-muted">Les ventes apparaîtront ici</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // Trier les ventes par date (du plus récent au plus ancien)
+                filteredSales.sort((a, b) => new Date(b.date) - new Date(a.date));
+                
+                filteredSales.forEach((sale, index) => {
+                    const saleElement = document.createElement('div');
+                    saleElement.className = 'reservation-item';
+                    
+                    // Formater la date
+                    const dateObj = new Date(sale.date);
+                    const formattedDate = dateObj.toLocaleDateString('fr-FR', {
+                        weekday: 'long',
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    });
+                    
+                    const displayAmount = this.convertPrice(sale.amount, 'EUR', currentCurrency);
+                    
+                    saleElement.innerHTML = `
+                        <div class="reservation-info">
+                            <h4>Vente #${filteredSales.length - index} - ${formattedDate}</h4>
+                            <p><strong>Montant :</strong> ${this.formatPrice(displayAmount)}</p>
+                            <p><strong>Produits :</strong> ${sale.items.map(item => `${item.product.name} (x${item.quantity})`).join(', ')}</p>
+                        </div>
+                    `;
+                    
+                    salesHistoryElement.appendChild(saleElement);
+                });
+            },
+            
+            checkReservationAlerts() {
+                // Vérifier les réservations en attente
+                const activeReservations = reservations.filter(r => r.status === 'active');
+                
+                if (activeReservations.length > 0) {
+                    // Afficher une alerte après un délai
+                    setTimeout(() => {
+                        const alertContent = document.getElementById('reservation-alert-content');
+                        if (!alertContent) return;
+                        
+                        alertContent.innerHTML = `
+                            <p>Vous avez <strong>${activeReservations.length}</strong> réservation(s) en attente :</p>
+                            <ul style="margin: 15px 0; padding-left: 20px;">
+                                ${activeReservations.map(r => 
+                                    `<li>${r.productName} - ${this.formatPhoneNumber(r.phone)}</li>`
+                                ).join('')}
+                            </ul>
+                            <p>N'oubliez pas de contacter vos clients !</p>
+                        `;
+                        
+                        const reservationAlertModal = document.getElementById('reservation-alert-modal');
+                        if (reservationAlertModal) reservationAlertModal.style.display = 'flex';
+                    }, 2000);
+                }
+            },
+            
+            openProductModal(productId = null) {
+                const modal = document.getElementById('product-modal');
+                const title = document.getElementById('product-modal-title');
+                const form = document.getElementById('product-form');
+                const priceCurrencyToggle = document.getElementById('price-currency-toggle');
+                const priceCurrencyLabel = document.getElementById('price-currency-label');
+                
+                if (!modal || !title || !form) return;
+                
+                // Réinitialiser le toggle de devise
+                if (priceCurrencyToggle) {
+                    priceCurrencyToggle.checked = false;
+                    priceInputCurrency = 'EUR';
+                }
+                if (priceCurrencyLabel) priceCurrencyLabel.textContent = 'EUR';
+                
+                if (productId) {
+                    // Mode édition
+                    const product = products.find(p => p.id === productId);
+                    if (!product) return;
+                    
+                    title.innerHTML = '<i class="fas fa-edit"></i> Modifier le produit';
+                    document.getElementById('product-id').value = product.id;
+                    document.getElementById('product-name').value = product.name;
+                    document.getElementById('product-category').value = product.category;
+                    document.getElementById('product-price').value = product.price;
+                    document.getElementById('product-stock').value = product.stock;
+                    document.getElementById('product-description').value = product.description || '';
                 } else {
-                    priceHint.textContent = `Taux de change: 1 EUR = ${EXCHANGE_RATE} PLN`;
+                    // Mode ajout
+                    title.innerHTML = '<i class="fas fa-box"></i> Ajouter un produit';
+                    form.reset();
+                    document.getElementById('product-id').value = '';
+                }
+                
+                modal.style.display = 'flex';
+            },
+            
+            editProduct(productId) {
+                this.openProductModal(productId);
+            },
+            
+            saveProduct() {
+                const id = document.getElementById('product-id').value;
+                const name = document.getElementById('product-name').value;
+                const category = document.getElementById('product-category').value;
+                let price = parseFloat(document.getElementById('product-price').value);
+                const stock = parseInt(document.getElementById('product-stock').value);
+                const description = document.getElementById('product-description').value;
+                
+                if (!name || !category || isNaN(price) || isNaN(stock)) {
+                    alert('Veuillez remplir tous les champs obligatoires.');
+                    return;
+                }
+                
+                // Convertir le prix en EUR si nécessaire
+                if (priceInputCurrency === 'PLN') {
+                    price = this.convertPrice(price, 'PLN', 'EUR');
+                }
+                
+                if (id) {
+                    // Modification
+                    const productIndex = products.findIndex(p => p.id === parseInt(id));
+                    if (productIndex !== -1) {
+                        products[productIndex].name = name;
+                        products[productIndex].category = category;
+                        products[productIndex].price = price;
+                        products[productIndex].stock = stock;
+                        products[productIndex].description = description;
+                    }
+                } else {
+                    // Ajout
+                    const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
+                    products.push({
+                        id: newId,
+                        name: name,
+                        category: category,
+                        price: price,
+                        stock: stock,
+                        description: description
+                    });
+                }
+                
+                // Mettre à jour l'interface
+                this.renderProducts();
+                this.renderStockProducts();
+                this.updateStats();
+                this.saveData();
+                
+                // Fermer le modal
+                const productModal = document.getElementById('product-modal');
+                if (productModal) productModal.style.display = 'none';
+                
+                alert(id ? 'Produit modifié avec succès !' : 'Produit ajouté avec succès !');
+            },
+            
+            deleteProduct(productId) {
+                if (confirm('Êtes-vous sûr de vouloir supprimer ce produit ? Cette action est irréversible.')) {
+                    const productIndex = products.findIndex(p => p.id === productId);
+                    if (productIndex !== -1) {
+                        products.splice(productIndex, 1);
+                        
+                        // Mettre à jour l'interface
+                        this.renderProducts();
+                        this.renderStockProducts();
+                        this.updateStats();
+                        this.saveData();
+                        
+                        alert('Produit supprimé avec succès !');
+                    }
                 }
             },
             
-            // NOUVELLE MÉTHODE : Filtrer les produits en stock faible
-            filterLowStock() {
-                const lowStockProducts = this.products.filter(product => 
-                    product.stock <= product.alertThreshold
+            // =============================================
+            // RAPPORTS AVANCÉS
+            // =============================================
+            
+            generateGlobalSalesReport() {
+                const startDate = document.getElementById('global-start-date').value;
+                const endDate = document.getElementById('global-end-date').value;
+                
+                if (!startDate || !endDate) {
+                    alert('Veuillez sélectionner une période valide.');
+                    return;
+                }
+                
+                // Filtrer les ventes par période
+                const filteredSales = salesHistory.filter(sale => 
+                    sale.date >= startDate && sale.date <= endDate
                 );
-                this.renderStockTable(lowStockProducts);
+                
+                // Calculer les statistiques en EUR
+                const totalSalesEUR = filteredSales.reduce((total, sale) => total + sale.amount, 0);
+                const transactionsCount = filteredSales.length;
+                const productsSold = filteredSales.reduce((total, sale) => 
+                    total + sale.items.reduce((sum, item) => sum + item.quantity, 0), 0
+                );
+                const averageCartEUR = transactionsCount > 0 ? totalSalesEUR / transactionsCount : 0;
+                
+                // Convertir en devise d'affichage
+                const totalSales = this.convertPrice(totalSalesEUR, 'EUR', currentCurrency);
+                const averageCart = this.convertPrice(averageCartEUR, 'EUR', currentCurrency);
                 
                 // Mettre à jour l'interface
-                document.getElementById('lowStockBtn').style.display = 'none';
-                document.getElementById('showAllBtn').style.display = 'block';
+                document.getElementById('global-total-sales').textContent = this.formatPrice(totalSales);
+                document.getElementById('global-transactions').textContent = transactionsCount;
+                document.getElementById('global-products-sold').textContent = productsSold;
+                document.getElementById('global-average-cart').textContent = this.formatPrice(averageCart);
                 
-                security.showToast(`Affichage de ${lowStockProducts.length} produit(s) en stock faible`);
-            },
-            
-            // NOUVELLE MÉTHODE : Afficher tous les produits
-            showAllProducts() {
-                this.renderStockTable();
+                // Générer le tableau des détails
+                const detailsTable = document.getElementById('global-sales-details');
+                detailsTable.innerHTML = '';
                 
-                // Mettre à jour l'interface
-                document.getElementById('lowStockBtn').style.display = 'block';
-                document.getElementById('showAllBtn').style.display = 'none';
-                
-                security.showToast('Affichage de tous les produits');
-            },
-            
-            renderStockTable(filteredProducts = null) {
-                const productsToDisplay = filteredProducts || this.products;
-                const tableBody = document.getElementById('stockTableBody');
-                tableBody.innerHTML = '';
-                
-                if (productsToDisplay.length === 0) {
-                    tableBody.innerHTML = `
+                if (filteredSales.length === 0) {
+                    detailsTable.innerHTML = `
                         <tr>
-                            <td colspan="9" style="text-align: center; padding: 40px; color: var(--muted);">
-                                Aucun produit en stock. Cliquez sur "+ Nouveau" pour ajouter votre premier produit.
+                            <td colspan="4" style="text-align: center; padding: 20px;">
+                                Aucune vente dans cette période
                             </td>
                         </tr>
                     `;
                     return;
                 }
                 
-                productsToDisplay.forEach(product => {
-                    const isLowStock = product.stock <= product.alertThreshold;
-                    const finalPriceZl = this.calculateFinalPrice(product.price, product.discount || 0);
-                    const finalPriceEur = this.convertToEur(finalPriceZl);
-                    const hasDiscount = product.discount && product.discount > 0;
-                    
+                filteredSales.forEach(sale => {
                     const row = document.createElement('tr');
-                    if (isLowStock) row.classList.add('low-stock');
                     
-                    if (this.showInEur) {
-                        // Affichage en euros
-                        const priceEur = this.convertToEur(product.price);
-                        row.innerHTML = `
-                            <td>${product.name}</td>
-                            <td>${product.sku}</td>
-                            <td>${product.category}</td>
-                            <td class="stock-value">${product.stock}</td>
-                            <td>${product.alertThreshold}</td>
-                            <td>
-                                ${hasDiscount ? 
-                                    `<span class="original-price">${this.formatPrice(priceEur, 'eur')}</span><br>${this.formatPrice(finalPriceEur, 'eur')}` : 
-                                    `${this.formatPrice(priceEur, 'eur')}`
-                                }
-                                <div class="eur-price">${this.formatPrice(product.price, 'zl')}</div>
-                            </td>
-                            <td>
-                                ${hasDiscount ? 
-                                    `<span class="discount-badge">-${product.discount}%</span>` : 
-                                    '0%'
-                                }
-                            </td>
-                            <td class="final-price">${this.formatPrice(finalPriceEur, 'eur')}</td>
-                            <td>
-                                <div class="action-buttons">
-                                    <button class="action-btn edit-btn" data-id="${product.id}">Modifier</button>
-                                    <button class="action-btn delete-btn" data-id="${product.id}">Supprimer</button>
-                                </div>
-                            </td>
-                        `;
-                    } else {
-                        // Affichage en złoty
-                        row.innerHTML = `
-                            <td>${product.name}</td>
-                            <td>${product.sku}</td>
-                            <td>${product.category}</td>
-                            <td class="stock-value">${product.stock}</td>
-                            <td>${product.alertThreshold}</td>
-                            <td>
-                                ${hasDiscount ? 
-                                    `<span class="original-price">${this.formatPrice(product.price, 'zl')}</span><br>${this.formatPrice(finalPriceZl, 'zl')}` : 
-                                    `${this.formatPrice(product.price, 'zl')}`
-                                }
-                                <div class="eur-price">${this.formatPrice(this.convertToEur(product.price), 'eur')}</div>
-                            </td>
-                            <td>
-                                ${hasDiscount ? 
-                                    `<span class="discount-badge">-${product.discount}%</span>` : 
-                                    '0%'
-                                }
-                            </td>
-                            <td class="final-price">${this.formatPrice(finalPriceZl, 'zl')}</td>
-                            <td>
-                                <div class="action-buttons">
-                                    <button class="action-btn edit-btn" data-id="${product.id}">Modifier</button>
-                                    <button class="action-btn delete-btn" data-id="${product.id}">Supprimer</button>
-                                </div>
-                            </td>
-                        `;
-                    }
+                    // Formater la date
+                    const dateObj = new Date(sale.date);
+                    const formattedDate = dateObj.toLocaleDateString('fr-FR');
                     
-                    tableBody.appendChild(row);
+                    // Compter le nombre total de produits
+                    const totalProducts = sale.items.reduce((sum, item) => sum + item.quantity, 0);
+                    
+                    // Lister les produits
+                    const productsList = sale.items.map(item => 
+                        `${item.product.name} (x${item.quantity})`
+                    ).join(', ');
+                    
+                    // Convertir le montant
+                    const displayAmount = this.convertPrice(sale.amount, 'EUR', currentCurrency);
+                    
+                    row.innerHTML = `
+                        <td>${formattedDate}</td>
+                        <td>${this.formatPrice(displayAmount)}</td>
+                        <td>${productsList}</td>
+                        <td>${totalProducts}</td>
+                    `;
+                    
+                    detailsTable.appendChild(row);
                 });
-                
-                // Ajouter les écouteurs d'événements pour les boutons d'action
-                document.querySelectorAll('.edit-btn').forEach(btn => {
-                    btn.addEventListener('click', (e) => {
-                        const productId = e.target.getAttribute('data-id');
-                        this.openEditModal(productId);
-                    });
-                });
-                
-                document.querySelectorAll('.delete-btn').forEach(btn => {
-                    btn.addEventListener('click', (e) => {
-                        const productId = e.target.getAttribute('data-id');
-                        this.deleteProduct(productId);
-                    });
-                });
             },
             
-            updateKPIs() {
-                const totalProducts = this.products.length;
-                const lowStockCount = this.products.filter(p => p.stock <= p.alertThreshold).length;
+            generateMonthlyReport() {
+                const year = document.getElementById('monthly-year').value;
+                const month = document.getElementById('monthly-month').value;
                 
-                // Valeur totale en złoty
-                const totalValueZl = this.products.reduce((sum, product) => 
-                    sum + (product.price * product.stock), 0);
-                
-                // Valeur totale après remises en złoty
-                const totalValueAfterDiscountZl = this.products.reduce((sum, product) => {
-                    const finalPrice = this.calculateFinalPrice(product.price, product.discount || 0);
-                    return sum + (finalPrice * product.stock);
-                }, 0);
-                
-                // Conversion en euros
-                const totalValueEur = this.convertToEur(totalValueZl);
-                const totalValueAfterDiscountEur = this.convertToEur(totalValueAfterDiscountZl);
-                
-                document.getElementById('totalProducts').textContent = totalProducts;
-                document.getElementById('lowStockCount').textContent = lowStockCount;
-                
-                if (this.showInEur) {
-                    document.getElementById('totalValue').textContent = this.formatPrice(totalValueEur, 'eur');
-                    document.getElementById('totalValueAfterDiscount').textContent = this.formatPrice(totalValueAfterDiscountEur, 'eur');
-                    document.getElementById('totalValueEur').textContent = this.formatPrice(totalValueZl, 'zl');
-                    document.getElementById('totalValueAfterDiscountEur').textContent = this.formatPrice(totalValueAfterDiscountZl, 'zl');
-                } else {
-                    document.getElementById('totalValue').textContent = this.formatPrice(totalValueZl, 'zl');
-                    document.getElementById('totalValueAfterDiscount').textContent = this.formatPrice(totalValueAfterDiscountZl, 'zl');
-                    document.getElementById('totalValueEur').textContent = this.formatPrice(totalValueEur, 'eur');
-                    document.getElementById('totalValueAfterDiscountEur').textContent = this.formatPrice(totalValueAfterDiscountEur, 'eur');
-                }
-            },
-            
-            openAddModal() {
-                this.editingProductId = null;
-                document.getElementById('modalTitle').textContent = 'Ajouter un produit';
-                document.getElementById('productForm').reset();
-                document.getElementById('productId').value = '';
-                document.getElementById('productDiscount').value = '0';
-                this.updateExchangeRateDisplay();
-                document.getElementById('productModal').style.display = 'flex';
-                
-                // Focus sur le premier champ
-                setTimeout(() => {
-                    document.getElementById('productName').focus();
-                }, 300);
-            },
-            
-            openEditModal(productId) {
-                const product = this.products.find(p => p.id === productId);
-                if (!product) return;
-                
-                this.editingProductId = productId;
-                document.getElementById('modalTitle').textContent = 'Modifier le produit';
-                document.getElementById('productId').value = product.id;
-                document.getElementById('productName').value = product.name;
-                document.getElementById('productSku').value = product.sku;
-                document.getElementById('productCategory').value = product.category;
-                document.getElementById('productStock').value = product.stock;
-                document.getElementById('productAlert').value = product.alertThreshold;
-                document.getElementById('productPrice').value = product.price;
-                document.getElementById('productDiscount').value = product.discount || 0;
-                this.updateExchangeRateDisplay();
-                document.getElementById('productModal').style.display = 'flex';
-                
-                // Focus sur le premier champ
-                setTimeout(() => {
-                    document.getElementById('productName').focus();
-                }, 300);
-            },
-            
-            closeModal() {
-                document.getElementById('productModal').style.display = 'none';
-            },
-            
-            saveProduct(e) {
-                e.preventDefault();
-                
-                const productId = document.getElementById('productId').value;
-                const name = document.getElementById('productName').value.trim();
-                const sku = document.getElementById('productSku').value.trim().toUpperCase();
-                const category = document.getElementById('productCategory').value;
-                const stock = parseInt(document.getElementById('productStock').value);
-                const alertThreshold = parseInt(document.getElementById('productAlert').value);
-                const price = parseFloat(document.getElementById('productPrice').value);
-                const discount = parseFloat(document.getElementById('productDiscount').value) || 0;
-                
-                // Validation
-                if (!name || !sku || !category || isNaN(stock) || isNaN(alertThreshold) || isNaN(price) || isNaN(discount)) {
-                    security.showToast('Veuillez remplir tous les champs correctement.', 'error');
+                if (!year || !month) {
+                    alert('Veuillez sélectionner une année et un mois.');
                     return;
                 }
                 
-                if (discount < 0 || discount > 100) {
-                    security.showToast('La remise doit être comprise entre 0 et 100%.', 'error');
-                    return;
-                }
+                // Filtrer les ventes par mois
+                const filteredSales = salesHistory.filter(sale => {
+                    const saleDate = new Date(sale.date);
+                    return saleDate.getFullYear() == year && 
+                           (saleDate.getMonth() + 1).toString().padStart(2, '0') == month;
+                });
                 
-                // Vérifier si la référence existe déjà (sauf pour l'édition du même produit)
-                const existingProduct = this.products.find(p => p.sku === sku && p.id !== productId);
-                if (existingProduct) {
-                    security.showToast('Cette référence existe déjà. Veuillez en choisir une autre.', 'error');
-                    return;
-                }
+                // Calculer les statistiques en EUR
+                const totalSalesEUR = filteredSales.reduce((total, sale) => total + sale.amount, 0);
+                const transactionsCount = filteredSales.length;
                 
-                if (this.editingProductId) {
-                    // Modification
-                    const index = this.products.findIndex(p => p.id === this.editingProductId);
-                    if (index !== -1) {
-                        this.products[index] = {
-                            ...this.products[index],
-                            name,
-                            sku,
-                            category,
-                            stock,
-                            alertThreshold,
-                            price,
-                            discount
-                        };
+                // Calculer les jours d'activité
+                const activeDays = new Set(filteredSales.map(sale => sale.date)).size;
+                
+                // Trouver le meilleur jour
+                const salesByDay = {};
+                filteredSales.forEach(sale => {
+                    if (!salesByDay[sale.date]) {
+                        salesByDay[sale.date] = 0;
                     }
-                    security.showToast('Produit modifié avec succès');
-                } else {
-                    // Ajout
-                    const newProduct = {
-                        id: this.generateId(),
-                        name,
-                        sku,
-                        category,
-                        stock,
-                        alertThreshold,
-                        price,
-                        discount,
-                        createdAt: new Date().toISOString()
-                    };
-                    this.products.push(newProduct);
-                    security.showToast('Produit ajouté avec succès');
-                }
+                    salesByDay[sale.date] += sale.amount;
+                });
                 
-                this.saveProducts();
-                this.renderStockTable();
-                this.updateKPIs();
-                this.closeModal();
-            },
-            
-            deleteProduct(productId) {
-                if (confirm('Êtes-vous sûr de vouloir supprimer ce produit ?')) {
-                    this.products = this.products.filter(p => p.id !== productId);
-                    this.saveProducts();
-                    this.renderStockTable();
-                    this.updateKPIs();
-                    security.showToast('Produit supprimé avec succès');
-                }
-            },
-            
-            filterProducts() {
-                const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-                if (!searchTerm) {
-                    this.renderStockTable();
-                    return;
-                }
+                let bestDayAmountEUR = 0;
+                let bestDayDate = '';
+                Object.entries(salesByDay).forEach(([date, amount]) => {
+                    if (amount > bestDayAmountEUR) {
+                        bestDayAmountEUR = amount;
+                        bestDayDate = date;
+                    }
+                });
                 
-                const filteredProducts = this.products.filter(product => 
-                    product.name.toLowerCase().includes(searchTerm) ||
-                    product.sku.toLowerCase().includes(searchTerm) ||
-                    product.category.toLowerCase().includes(searchTerm)
-                );
-                
-                this.renderStockTable(filteredProducts);
-            },
-            
-            exportToCSV() {
-                if (this.products.length === 0) {
-                    security.showToast('Aucun produit à exporter', 'error');
-                    return;
-                }
-                
-                const headers = ['Nom', 'Référence', 'Catégorie', 'Stock', 'Alerte', 'Prix (zł)', 'Remise %', 'Prix final (zł)', 'Prix (EUR)', 'Prix final (EUR)'];
-                const csvContent = [
-                    headers.join(','),
-                    ...this.products.map(p => {
-                        const finalPriceZl = this.calculateFinalPrice(p.price, p.discount || 0);
-                        const priceEur = this.convertToEur(p.price);
-                        const finalPriceEur = this.convertToEur(finalPriceZl);
-                        return [
-                            `"${p.name}"`,
-                            p.sku,
-                            p.category,
-                            p.stock,
-                            p.alertThreshold,
-                            p.price.toFixed(2),
-                            (p.discount || 0).toFixed(1),
-                            finalPriceZl.toFixed(2),
-                            priceEur.toFixed(2),
-                            finalPriceEur.toFixed(2)
-                        ].join(',');
-                    })
-                ].join('\n');
-                
-                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-                const link = document.createElement('a');
-                const url = URL.createObjectURL(blob);
-                link.setAttribute('href', url);
-                link.setAttribute('download', `stock_perfumeria_${new Date().toISOString().split('T')[0]}.csv`);
-                link.style.visibility = 'hidden';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                
-                security.showToast('Export CSV réussi');
-            },
-            
-            // =============================================
-            // FONCTIONNALITÉS DE SYNCHRONISATION
-            // =============================================
-            
-            exportData() {
-                const data = {
-                    products: this.products,
-                    exportDate: new Date().toISOString(),
-                    version: "1.0",
-                    totalProducts: this.products.length,
-                    totalValue: this.products.reduce((sum, p) => sum + (p.price * p.stock), 0),
-                    currency: "PLN",
-                    exchangeRate: EXCHANGE_RATE
-                };
-                
-                const dataStr = JSON.stringify(data, null, 2);
-                const dataBlob = new Blob([dataStr], { type: 'application/json' });
-                const url = URL.createObjectURL(dataBlob);
-                const link = document.createElement('a');
-                
-                link.href = url;
-                link.download = `perfumeria-backup-${new Date().toISOString().split('T')[0]}.json`;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                URL.revokeObjectURL(url);
-                
-                security.showToast('Données exportées avec succès');
-            },
-            
-            importData(event) {
-                const file = event.target.files[0];
-                if (!file) return;
-                
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    try {
-                        const importedData = JSON.parse(e.target.result);
-                        
-                        if (confirm(`Voulez-vous remplacer vos ${this.products.length} produits actuels par les ${importedData.products.length} produits du fichier ?`)) {
-                            this.products = importedData.products || [];
-                            this.saveProducts();
-                            this.renderStockTable();
-                            this.updateKPIs();
-                            security.showToast(`${importedData.products.length} produits importés avec succès`);
+                // Calculer les produits les plus vendus
+                const productSales = {};
+                filteredSales.forEach(sale => {
+                    sale.items.forEach(item => {
+                        const productId = item.product.id;
+                        if (!productSales[productId]) {
+                            productSales[productId] = {
+                                name: item.product.name,
+                                quantity: 0,
+                                revenueEUR: 0
+                            };
                         }
-                    } catch (error) {
-                        security.showToast('Erreur lors de l\'import du fichier', 'error');
-                        console.error('Import error:', error);
-                    }
-                };
-                reader.readAsText(file);
-                event.target.value = '';
+                        productSales[productId].quantity += item.quantity;
+                        productSales[productId].revenueEUR += item.product.price * item.quantity;
+                    });
+                });
+                
+                // Trier les produits par revenu
+                const topProducts = Object.values(productSales)
+                    .sort((a, b) => b.revenueEUR - a.revenueEUR)
+                    .slice(0, 5);
+                
+                // Convertir en devise d'affichage
+                const totalSales = this.convertPrice(totalSalesEUR, 'EUR', currentCurrency);
+                const bestDayAmount = this.convertPrice(bestDayAmountEUR, 'EUR', currentCurrency);
+                
+                // Mettre à jour l'interface
+                document.getElementById('monthly-total-sales').textContent = this.formatPrice(totalSales);
+                document.getElementById('monthly-transactions').textContent = transactionsCount;
+                document.getElementById('monthly-active-days').textContent = activeDays;
+                document.getElementById('monthly-best-day').textContent = this.formatPrice(bestDayAmount);
+                
+                // Générer le tableau des top produits
+                const topProductsTable = document.getElementById('monthly-top-products');
+                topProductsTable.innerHTML = '';
+                
+                if (topProducts.length === 0) {
+                    topProductsTable.innerHTML = `
+                        <tr>
+                            <td colspan="3" style="text-align: center; padding: 20px;">
+                                Aucune vente ce mois-ci
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+                
+                topProducts.forEach(product => {
+                    const row = document.createElement('tr');
+                    const displayRevenue = this.convertPrice(product.revenueEUR, 'EUR', currentCurrency);
+                    
+                    row.innerHTML = `
+                        <td>${product.name}</td>
+                        <td>${product.quantity}</td>
+                        <td>${this.formatPrice(displayRevenue)}</td>
+                    `;
+                    topProductsTable.appendChild(row);
+                });
             },
             
-            setupSyncFeatures() {
-                document.getElementById('exportDataBtn').addEventListener('click', () => {
-                    this.exportData();
-                });
+            generateStockReport() {
+                const year = document.getElementById('stock-year').value;
+                const month = document.getElementById('stock-month').value;
                 
-                document.getElementById('importDataBtn').addEventListener('click', () => {
-                    document.getElementById('importDataInput').click();
-                });
+                if (!year || !month) {
+                    alert('Veuillez sélectionner une année et un mois.');
+                    return;
+                }
                 
-                document.getElementById('importDataInput').addEventListener('change', (event) => {
-                    this.importData(event);
-                });
-            },
-            
-            generateId() {
-                return Date.now().toString(36) + Math.random().toString(36).substr(2);
-            },
-            
-            setupEventListeners() {
-                document.getElementById('addProductBtn').addEventListener('click', () => {
-                    this.openAddModal();
-                });
+                // Calculer les statistiques de stock en EUR
+                const stockValueEUR = products.reduce((total, product) => total + (product.price * product.stock), 0);
+                const stockCount = products.length;
+                const outOfStockCount = products.filter(p => p.stock === 0).length;
+                const lowStockCount = products.filter(p => p.stock > 0 && p.stock <= 5).length;
                 
-                document.getElementById('exportBtn').addEventListener('click', () => {
-                    this.exportToCSV();
-                });
+                // Convertir en devise d'affichage
+                const stockValue = this.convertPrice(stockValueEUR, 'EUR', currentCurrency);
                 
-                document.getElementById('toggleCurrencyBtn').addEventListener('click', () => {
-                    this.toggleCurrency();
-                });
+                // Mettre à jour l'interface
+                document.getElementById('stock-report-value').textContent = this.formatPrice(stockValue);
+                document.getElementById('stock-report-count').textContent = stockCount;
+                document.getElementById('stock-report-outofstock').textContent = outOfStockCount;
+                document.getElementById('stock-report-low').textContent = lowStockCount;
                 
-                // NOUVEAUX ÉCOUTEURS POUR LE FILTRE STOCK FAIBLE
-                document.getElementById('lowStockBtn').addEventListener('click', () => {
-                    this.filterLowStock();
-                });
+                // Générer le tableau des détails
+                const detailsTable = document.getElementById('stock-report-details');
+                detailsTable.innerHTML = '';
                 
-                document.getElementById('showAllBtn').addEventListener('click', () => {
-                    this.showAllProducts();
-                });
+                if (products.length === 0) {
+                    detailsTable.innerHTML = `
+                        <tr>
+                            <td colspan="5" style="text-align: center; padding: 20px;">
+                                Aucun produit en stock
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
                 
-                document.getElementById('cancelBtn').addEventListener('click', () => {
-                    this.closeModal();
-                });
-                
-                document.getElementById('productForm').addEventListener('submit', (e) => {
-                    this.saveProduct(e);
-                });
-                
-                document.getElementById('searchInput').addEventListener('input', () => {
-                    this.filterProducts();
-                });
-                
-                document.getElementById('productPrice').addEventListener('input', () => {
-                    this.updateExchangeRateDisplay();
-                });
-                
-                // Fermer le modal en cliquant à l'extérieur
-                document.getElementById('productModal').addEventListener('click', (e) => {
-                    if (e.target.id === 'productModal') {
-                        this.closeModal();
-                    }
-                });
-                
-                // Touche Echap pour fermer le modal
-                document.addEventListener('keydown', (e) => {
-                    if (e.key === 'Escape' && document.getElementById('productModal').style.display === 'flex') {
-                        this.closeModal();
-                    }
+                // Pour cet exemple, nous n'avons pas d'historique de stock, donc nous utilisons les données actuelles
+                products.forEach(product => {
+                    const row = document.createElement('tr');
+                    const stockStatus = product.stock > 5 ? 'text-success' : 
+                                       (product.stock > 0 ? 'text-warning' : 'text-danger');
+                    
+                    // Dans une application réelle, vous auriez un historique des stocks
+                    // Pour cet exemple, nous utilisons des valeurs simulées
+                    const startStock = Math.min(product.stock + Math.floor(Math.random() * 10), 50);
+                    const monthlySales = startStock - product.stock;
+                    const variation = monthlySales > 0 ? `-${monthlySales}` : `+${Math.abs(monthlySales)}`;
+                    
+                    row.innerHTML = `
+                        <td>${product.name}</td>
+                        <td class="${stockStatus}">${product.stock}</td>
+                        <td>${startStock}</td>
+                        <td>${monthlySales > 0 ? monthlySales : 0}</td>
+                        <td>${variation}</td>
+                    `;
+                    detailsTable.appendChild(row);
                 });
             }
         };
-        
+
         // =============================================
-        // INITIALISATION
+        // INITIALISATION DE L'APPLICATION
         // =============================================
         
-        // Démarrer l'application au chargement
-        document.addEventListener('DOMContentLoaded', () => {
+        // Démarrer le système de sécurité au chargement de la page
+        document.addEventListener('DOMContentLoaded', function() {
             security.init();
         });
     </script>
