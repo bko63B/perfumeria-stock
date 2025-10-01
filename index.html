@@ -1,0 +1,621 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#0f1724">
+  <meta name="description" content="Gestion de stock Perfumeria KONATE">
+  
+  <title>Perfumeria KONATE — Suivi de stock</title>
+  <style>
+    :root{--bg:#0f1724;--card:#0b1220;--muted:#9aa4b2;--accent:#6ee7b7;--danger:#ff7b7b;--discount:#ffa726}
+    *{box-sizing:border-box}
+    body{font-family:Inter,ui-sans-serif,system-ui,Arial;background:linear-gradient(180deg,#071029 0%, #08141f 100%);color:#e6eef6;margin:0;padding:16px;min-height:100vh}
+    .container{max-width:1200px;margin:0 auto}
+    header{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-bottom:18px}
+    h1{font-size:20px;margin:0;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+    h1 img{height:40px}
+    h1 a{color:var(--accent);text-decoration:none;font-size:14px;font-weight:400}
+    .controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+    .btn{background:var(--accent);border:none;padding:8px 12px;border-radius:8px;cursor:pointer;color:#042024;font-weight:600;flex-shrink:0;transition:all 0.2s}
+    .btn:hover{opacity:0.9;transform:translateY(-1px)}
+    .btn.secondary{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--accent)}
+    .card{background:rgba(255,255,255,0.03);padding:12px;border-radius:12px;box-shadow:0 6px 20px rgba(2,6,23,0.6);overflow-x:auto}
+    .search{padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit;flex:1;min-width:160px}
+    table{width:100%;border-collapse:collapse;margin-top:12px;min-width:700px}
+    th,td{padding:8px 10px;text-align:left;border-bottom:1px solid rgba(255,255,255,0.03);font-size:13px;white-space:nowrap}
+    th{color:var(--muted);font-weight:600}
+    tr.low td{background:linear-gradient(90deg, rgba(255,123,123,0.06), transparent)}
+    .stock{font-weight:700}
+    .small{font-size:12px;color:var(--muted)}
+    .summary{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+    .kpi{flex:1;min-width:120px;padding:12px;border-radius:10px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent)}
+    .toast{position:fixed;right:18px;bottom:18px;background:#0b1220;padding:12px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);max-width:90%;z-index:1001;box-shadow:0 4px 12px rgba(0,0,0,0.3)}
+    @media (max-width:700px){
+      h1{font-size:18px;flex-direction:column;align-items:flex-start}
+      h1 img{height:32px}
+      h1 a{margin-top:4px}
+      table{font-size:12px}
+      th,td{padding:6px 8px}
+      .controls{flex-direction:column;align-items:stretch}
+      .btn,.search{width:100%}
+      header{flex-direction:column;align-items:flex-start}
+    }
+    .editable{background:rgba(255,255,255,0.01);padding:6px;border-radius:6px}
+    input[type='number']{width:70px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:white;border-radius:4px;padding:4px}
+    .import-area{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+    .modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);display:none;align-items:center;justify-content:center;z-index:1000}
+    .modal-content{background:#0b1220;padding:20px;border-radius:12px;max-width:400px;width:90%;box-shadow:0 10px 25px rgba(0,0,0,0.5)}
+    .modal-content h2{margin-top:0;font-size:18px}
+    .modal-content label{display:block;margin-top:10px;font-size:14px}
+    .modal-content input, .modal-content select{width:100%;padding:8px;margin-top:4px;border-radius:6px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05);color:#e6eef6}
+    .modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}
+    .error{color:var(--danger);font-size:12px;margin-top:4px;display:none}
+    .actions{display:flex;gap:6px}
+    .delete-btn{color:var(--danger);cursor:pointer;padding:4px 8px;border-radius:4px;background:rgba(255,123,123,0.1)}
+    .edit-btn{color:var(--accent);cursor:pointer;padding:4px 8px;border-radius:4px;background:rgba(110,231,183,0.1)}
+    .hidden{display:none}
+    .sku-info{background:rgba(255,255,255,0.02);padding:10px;border-radius:8px;margin-top:10px;font-size:12px}
+    .sku-example{margin-top:5px;color:var(--accent)}
+    #installBtn{display:none;margin-left:8px}
+    .discount-badge{color:var(--discount);font-weight:600}
+    .final-price{color:var(--accent);font-weight:700}
+    .original-price{text-decoration:line-through;color:var(--muted);font-size:11px}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div>
+        <h1>
+          <a href="https://www.perfumeriakonate.pl" target="_blank">
+            <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUwIiBoZWlnaHQ9IjQwIiB2aWV3Qm94PSIwIDAgMTUwIDQwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cmVjdCB3aWR0aD0iMTUwIiBoZWlnaHQ9IjQwIiBmaWxsPSIjMGYxNzI0Ii8+Cjx0ZXh0IHg9IjE1IiB5PSIyMCIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjE0IiBmaWxsPSIjNmVlN2I3Ij5QZXJmdW1lcmlhIEtPTkFURTwvdGV4dD4KPHRleHQgeD0iMTUiIHk9IjM1IiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iOCIgZmlsbD0iIzlhYTRiMiI+UXVhbGl0eSBQZXJmdW1lICZhbXA7IENvc21ldGljPC90ZXh0Pgo8L3N2Zz4K" alt="Perfumeria KONATE Logo" />
+          </a>
+          Perfumeria KONATE <a href="https://www.perfumeriakonate.pl" target="_blank">www.perfumeriakonate.pl</a>
+        </h1>
+        <div class="small">Compatible boutique & boutique éphémère • Synchronisation temps réel • Sauvegarde locale</div>
+      </div>
+      <div class="controls">
+        <input id="search" class="search" placeholder="Rechercher (nom, SKU, catégorie)" />
+        <button class="btn" id="addItemBtn">+ Ajouter</button>
+        <button class="btn secondary" id="exportCsvBtn">Exporter CSV</button>
+        <label class="btn secondary" for="importCsvInput" style="cursor:pointer">Importer CSV</label>
+        <input type="file" id="importCsvInput" accept="text/csv" style="display:none" />
+      </div>
+    </header>
+
+    <div class="summary">
+      <div class="kpi">
+        <div class="small">Produits en stock</div>
+        <div id="totalProducts">0</div>
+      </div>
+      <div class="kpi">
+        <div class="small">Stock faible</div>
+        <div id="lowStockCount">0</div>
+      </div>
+      <div class="kpi">
+        <div class="small">Valeur totale (prix de base)</div>
+        <div id="totalValue">0 €</div>
+      </div>
+      <div class="kpi">
+        <div class="small">Valeur après remises</div>
+        <div id="totalValueAfterDiscount">0 €</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <table id="stockTable">
+        <thead>
+          <tr>
+            <th>Nom</th>
+            <th>SKU</th>
+            <th>Catégorie</th>
+            <th>Stock</th>
+            <th>Seuil alerte</th>
+            <th>Prix</th>
+            <th>Remise %</th>
+            <th>Prix final</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="stockTableBody">
+          <!-- Les données seront insérées ici dynamiquement -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Modal pour ajouter/modifier un produit -->
+    <div id="productModal" class="modal">
+      <div class="modal-content">
+        <h2 id="modalTitle">Ajouter un produit</h2>
+        <form id="productForm">
+          <input type="hidden" id="productId">
+          <label>
+            Nom du produit
+            <input type="text" id="productName" required />
+          </label>
+          <label>
+            SKU (Code produit unique)
+            <input type="text" id="productSku" required placeholder="Ex: CHANEL-N5-EDP-50ML" />
+          </label>
+          <div class="sku-info">
+            <strong>Qu'est-ce qu'un SKU ?</strong><br>
+            Code unique pour identifier chaque produit.<br>
+            <span class="sku-example">Exemples: CHANEL-N5-EDP-50ML, DIOR-SAUVAGE-EDT-100ML</span>
+          </div>
+          <label>
+            Catégorie
+            <select id="productCategory" required>
+              <option value="">Sélectionner une catégorie</option>
+              <option value="Parfum Femme">Parfum Femme</option>
+              <option value="Parfum Homme">Parfum Homme</option>
+              <option value="Parfum Unisexe">Parfum Unisexe</option>
+              <option value="Eau de Toilette">Eau de Toilette</option>
+              <option value="Eau de Parfum">Eau de Parfum</option>
+              <option value="Accessoires">Accessoires</option>
+            </select>
+          </label>
+          <label>
+            Stock actuel
+            <input type="number" id="productStock" min="0" required />
+          </label>
+          <label>
+            Seuil d'alerte
+            <input type="number" id="productAlert" min="1" required />
+          </label>
+          <label>
+            Prix (€)
+            <input type="number" id="productPrice" min="0" step="0.01" required />
+          </label>
+          <label>
+            Remise (%)
+            <input type="number" id="productDiscount" min="0" max="100" step="1" value="0" />
+          </label>
+          <div class="error" id="formError"></div>
+          <div class="modal-actions">
+            <button type="button" class="btn secondary" id="cancelBtn">Annuler</button>
+            <button type="submit" class="btn">Enregistrer</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Toast pour les notifications -->
+    <div id="toast" class="toast hidden"></div>
+  </div>
+
+  <script>
+    // Stockage des données
+    let products = JSON.parse(localStorage.getItem('perfumeriaKonateStock')) || [];
+    let editingProductId = null;
+
+    // Éléments DOM
+    const stockTableBody = document.getElementById('stockTableBody');
+    const productModal = document.getElementById('productModal');
+    const productForm = document.getElementById('productForm');
+    const modalTitle = document.getElementById('modalTitle');
+    const cancelBtn = document.getElementById('cancelBtn');
+    const addItemBtn = document.getElementById('addItemBtn');
+    const searchInput = document.getElementById('search');
+    const exportCsvBtn = document.getElementById('exportCsvBtn');
+    const importCsvInput = document.getElementById('importCsvInput');
+    const toast = document.getElementById('toast');
+
+    // KPI Elements
+    const totalProductsEl = document.getElementById('totalProducts');
+    const lowStockCountEl = document.getElementById('lowStockCount');
+    const totalValueEl = document.getElementById('totalValue');
+    const totalValueAfterDiscountEl = document.getElementById('totalValueAfterDiscount');
+
+    // Initialisation
+    document.addEventListener('DOMContentLoaded', function() {
+      renderStockTable();
+      updateKPIs();
+      
+      // Événements
+      addItemBtn.addEventListener('click', openAddModal);
+      cancelBtn.addEventListener('click', closeModal);
+      productForm.addEventListener('submit', saveProduct);
+      searchInput.addEventListener('input', filterProducts);
+      exportCsvBtn.addEventListener('click', exportToCSV);
+      importCsvInput.addEventListener('change', importFromCSV);
+    });
+
+    // Fonction pour calculer le prix final
+    function calculateFinalPrice(price, discount) {
+      return price * (1 - discount / 100);
+    }
+
+    // Afficher le tableau de stock
+    function renderStockTable(filteredProducts = null) {
+      const productsToDisplay = filteredProducts || products;
+      stockTableBody.innerHTML = '';
+
+      if (productsToDisplay.length === 0) {
+        stockTableBody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:20px">Aucun produit en stock</td></tr>';
+        return;
+      }
+
+      productsToDisplay.forEach(product => {
+        const isLowStock = product.stock <= product.alertThreshold;
+        const finalPrice = calculateFinalPrice(product.price, product.discount || 0);
+        const hasDiscount = product.discount && product.discount > 0;
+        
+        const row = document.createElement('tr');
+        if (isLowStock) row.classList.add('low');
+        
+        row.innerHTML = `
+          <td>${product.name}</td>
+          <td>${product.sku}</td>
+          <td>${product.category}</td>
+          <td class="stock">${product.stock}</td>
+          <td>${product.alertThreshold}</td>
+          <td>
+            ${hasDiscount ? `<span class="original-price">${product.price.toFixed(2)} €</span>` : `${product.price.toFixed(2)} €`}
+          </td>
+          <td>
+            ${hasDiscount ? `<span class="discount-badge">-${product.discount}%</span>` : '0%'}
+          </td>
+          <td class="final-price">${finalPrice.toFixed(2)} €</td>
+          <td class="actions">
+            <span class="edit-btn" data-id="${product.id}">Modifier</span>
+            <span class="delete-btn" data-id="${product.id}">Supprimer</span>
+          </td>
+        `;
+        
+        stockTableBody.appendChild(row);
+      });
+
+      // Ajouter les événements pour les boutons d'action
+      document.querySelectorAll('.edit-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const productId = this.getAttribute('data-id');
+          openEditModal(productId);
+        });
+      });
+
+      document.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const productId = this.getAttribute('data-id');
+          deleteProduct(productId);
+        });
+      });
+    }
+
+    // Mettre à jour les KPI
+    function updateKPIs() {
+      const totalProducts = products.length;
+      const lowStockCount = products.filter(p => p.stock <= p.alertThreshold).length;
+      
+      // Valeur totale au prix de base
+      const totalValue = products.reduce((sum, product) => sum + (product.price * product.stock), 0);
+      
+      // Valeur totale après remises
+      const totalValueAfterDiscount = products.reduce((sum, product) => {
+        const finalPrice = calculateFinalPrice(product.price, product.discount || 0);
+        return sum + (finalPrice * product.stock);
+      }, 0);
+      
+      totalProductsEl.textContent = totalProducts;
+      lowStockCountEl.textContent = lowStockCount;
+      totalValueEl.textContent = totalValue.toFixed(2) + ' €';
+      totalValueAfterDiscountEl.textContent = totalValueAfterDiscount.toFixed(2) + ' €';
+    }
+
+    // Ouvrir le modal d'ajout
+    function openAddModal() {
+      editingProductId = null;
+      modalTitle.textContent = 'Ajouter un produit';
+      productForm.reset();
+      document.getElementById('productId').value = '';
+      document.getElementById('productDiscount').value = '0';
+      document.getElementById('formError').style.display = 'none';
+      productModal.style.display = 'flex';
+    }
+
+    // Ouvrir le modal d'édition
+    function openEditModal(productId) {
+      const product = products.find(p => p.id === productId);
+      if (!product) return;
+      
+      editingProductId = productId;
+      modalTitle.textContent = 'Modifier le produit';
+      document.getElementById('productId').value = product.id;
+      document.getElementById('productName').value = product.name;
+      document.getElementById('productSku').value = product.sku;
+      document.getElementById('productCategory').value = product.category;
+      document.getElementById('productStock').value = product.stock;
+      document.getElementById('productAlert').value = product.alertThreshold;
+      document.getElementById('productPrice').value = product.price;
+      document.getElementById('productDiscount').value = product.discount || 0;
+      document.getElementById('formError').style.display = 'none';
+      productModal.style.display = 'flex';
+    }
+
+    // Fermer le modal
+    function closeModal() {
+      productModal.style.display = 'none';
+    }
+
+    // Sauvegarder un produit
+    function saveProduct(e) {
+      e.preventDefault();
+      
+      const productId = document.getElementById('productId').value;
+      const name = document.getElementById('productName').value.trim();
+      const sku = document.getElementById('productSku').value.trim().toUpperCase();
+      const category = document.getElementById('productCategory').value;
+      const stock = parseInt(document.getElementById('productStock').value);
+      const alertThreshold = parseInt(document.getElementById('productAlert').value);
+      const price = parseFloat(document.getElementById('productPrice').value);
+      const discount = parseFloat(document.getElementById('productDiscount').value) || 0;
+      
+      // Validation
+      const errorEl = document.getElementById('formError');
+      if (!name || !sku || !category || isNaN(stock) || isNaN(alertThreshold) || isNaN(price) || isNaN(discount)) {
+        errorEl.textContent = 'Veuillez remplir tous les champs correctement.';
+        errorEl.style.display = 'block';
+        return;
+      }
+      
+      if (discount < 0 || discount > 100) {
+        errorEl.textContent = 'La remise doit être comprise entre 0 et 100%.';
+        errorEl.style.display = 'block';
+        return;
+      }
+      
+      // Vérifier si le SKU existe déjà (sauf pour l'édition du même produit)
+      const existingProduct = products.find(p => p.sku === sku && p.id !== productId);
+      if (existingProduct) {
+        errorEl.textContent = 'Ce SKU existe déjà. Veuillez en choisir un autre.';
+        errorEl.style.display = 'block';
+        return;
+      }
+      
+      if (editingProductId) {
+        // Modification
+        const index = products.findIndex(p => p.id === editingProductId);
+        if (index !== -1) {
+          products[index] = {
+            ...products[index],
+            name,
+            sku,
+            category,
+            stock,
+            alertThreshold,
+            price,
+            discount
+          };
+        }
+      } else {
+        // Ajout
+        const newProduct = {
+          id: generateId(),
+          name,
+          sku,
+          category,
+          stock,
+          alertThreshold,
+          price,
+          discount,
+          createdAt: new Date().toISOString()
+        };
+        products.push(newProduct);
+      }
+      
+      saveToLocalStorage();
+      renderStockTable();
+      updateKPIs();
+      closeModal();
+      showToast(editingProductId ? 'Produit modifié avec succès' : 'Produit ajouté avec succès');
+    }
+
+    // Supprimer un produit
+    function deleteProduct(productId) {
+      if (confirm('Êtes-vous sûr de vouloir supprimer ce produit ?')) {
+        products = products.filter(p => p.id !== productId);
+        saveToLocalStorage();
+        renderStockTable();
+        updateKPIs();
+        showToast('Produit supprimé avec succès');
+      }
+    }
+
+    // Filtrer les produits
+    function filterProducts() {
+      const searchTerm = searchInput.value.toLowerCase();
+      if (!searchTerm) {
+        renderStockTable();
+        return;
+      }
+      
+      const filteredProducts = products.filter(product => 
+        product.name.toLowerCase().includes(searchTerm) ||
+        product.sku.toLowerCase().includes(searchTerm) ||
+        product.category.toLowerCase().includes(searchTerm)
+      );
+      
+      renderStockTable(filteredProducts);
+    }
+
+    // Exporter en CSV
+    function exportToCSV() {
+      if (products.length === 0) {
+        showToast('Aucun produit à exporter');
+        return;
+      }
+      
+      const headers = ['Nom', 'SKU', 'Catégorie', 'Stock', 'Seuil alerte', 'Prix', 'Remise %', 'Prix final'];
+      const csvContent = [
+        headers.join(','),
+        ...products.map(p => {
+          const finalPrice = calculateFinalPrice(p.price, p.discount || 0);
+          return [
+            `"${p.name}"`,
+            p.sku,
+            p.category,
+            p.stock,
+            p.alertThreshold,
+            p.price.toFixed(2),
+            (p.discount || 0).toFixed(1),
+            finalPrice.toFixed(2)
+          ].join(',');
+        })
+      ].join('\n');
+      
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', `stock_perfumeria_konate_${new Date().toISOString().split('T')[0]}.csv`);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      showToast('Export CSV réussi');
+    }
+
+    // Importer depuis CSV
+    function importFromCSV(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const csvContent = e.target.result;
+          const lines = csvContent.split('\n');
+          const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
+          
+          // Vérifier les en-têtes
+          const expectedHeaders = ['Nom', 'SKU', 'Catégorie', 'Stock', 'Seuil alerte', 'Prix', 'Remise %', 'Prix final'];
+          if (!expectedHeaders.every(h => headers.includes(h))) {
+            showToast('Format de fichier CSV invalide', 'error');
+            return;
+          }
+          
+          const importedProducts = [];
+          for (let i = 1; i < lines.length; i++) {
+            if (!lines[i].trim()) continue;
+            
+            const values = lines[i].split(',').map(v => v.trim().replace(/"/g, ''));
+            if (values.length !== headers.length) continue;
+            
+            const product = {
+              id: generateId(),
+              name: values[headers.indexOf('Nom')],
+              sku: values[headers.indexOf('SKU')],
+              category: values[headers.indexOf('Catégorie')],
+              stock: parseInt(values[headers.indexOf('Stock')]),
+              alertThreshold: parseInt(values[headers.indexOf('Seuil alerte')]),
+              price: parseFloat(values[headers.indexOf('Prix')]),
+              discount: parseFloat(values[headers.indexOf('Remise %')]) || 0,
+              createdAt: new Date().toISOString()
+            };
+            
+            // Validation des données
+            if (product.name && product.sku && !isNaN(product.stock) && !isNaN(product.alertThreshold) && !isNaN(product.price)) {
+              importedProducts.push(product);
+            }
+          }
+          
+          if (importedProducts.length > 0) {
+            // Fusionner avec les produits existants (remplacer les SKU en double)
+            const existingSkus = products.map(p => p.sku);
+            const newProducts = importedProducts.filter(p => !existingSkus.includes(p.sku));
+            const updatedProducts = products.map(p => {
+              const imported = importedProducts.find(ip => ip.sku === p.sku);
+              return imported ? { ...p, ...imported } : p;
+            });
+            
+            products = [...updatedProducts, ...newProducts];
+            saveToLocalStorage();
+            renderStockTable();
+            updateKPIs();
+            showToast(`${importedProducts.length} produits importés avec succès`);
+          } else {
+            showToast('Aucun produit valide trouvé dans le fichier', 'error');
+          }
+        } catch (error) {
+          console.error('Erreur lors de l\'import CSV:', error);
+          showToast('Erreur lors de l\'import du fichier CSV', 'error');
+        }
+      };
+      
+      reader.readAsText(file);
+      // Réinitialiser l'input file
+      event.target.value = '';
+    }
+
+    // Afficher une notification
+    function showToast(message, type = 'success') {
+      toast.textContent = message;
+      toast.className = 'toast';
+      if (type === 'error') {
+        toast.style.borderLeft = '4px solid var(--danger)';
+      } else {
+        toast.style.borderLeft = '4px solid var(--accent)';
+      }
+      
+      setTimeout(() => {
+        toast.classList.remove('hidden');
+      }, 100);
+      
+      setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 3000);
+    }
+
+    // Sauvegarder dans le localStorage
+    function saveToLocalStorage() {
+      localStorage.setItem('perfumeriaKonateStock', JSON.stringify(products));
+    }
+
+    // Générer un ID unique
+    function generateId() {
+      return Date.now().toString(36) + Math.random().toString(36).substr(2);
+    }
+
+    // Données d'exemple (à supprimer en production)
+    if (products.length === 0) {
+      products = [
+        {
+          id: generateId(),
+          name: "Chanel N°5 Eau de Parfum",
+          sku: "CHANEL-N5-EDP-50ML",
+          category: "Parfum Femme",
+          stock: 15,
+          alertThreshold: 5,
+          price: 120.00,
+          discount: 10,
+          createdAt: new Date().toISOString()
+        },
+        {
+          id: generateId(),
+          name: "Dior Sauvage Eau de Toilette",
+          sku: "DIOR-SAUVAGE-EDT-100ML",
+          category: "Parfum Homme",
+          stock: 8,
+          alertThreshold: 5,
+          price: 95.00,
+          discount: 0,
+          createdAt: new Date().toISOString()
+        },
+        {
+          id: generateId(),
+          name: "Jo Malone Wood Sage & Sea Salt",
+          sku: "JOMALONE-WOODSAGE-EDC-100ML",
+          category: "Parfum Unisexe",
+          stock: 3,
+          alertThreshold: 5,
+          price: 110.00,
+          discount: 15,
+          createdAt: new Date().toISOString()
+        }
+      ];
+      saveToLocalStorage();
+    }
+  </script>
+</body>
+</html>
