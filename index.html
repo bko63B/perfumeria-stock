@@ -682,6 +682,8 @@
             
             <div class="app-controls">
                 <input type="text" id="searchInput" class="app-search" placeholder="Rechercher un produit...">
+                <button id="lowStockBtn" class="app-btn btn-secondary">Stock faible</button>
+                <button id="showAllBtn" class="app-btn btn-secondary" style="display:none;">Tous les produits</button>
                 <button id="toggleCurrencyBtn" class="app-btn btn-currency">Afficher en EUR</button>
                 <button id="addProductBtn" class="app-btn btn-primary">+ Nouveau</button>
                 <button id="exportBtn" class="app-btn btn-secondary">Exporter CSV</button>
@@ -1159,6 +1161,31 @@
                 }
             },
             
+            // NOUVELLE MÉTHODE : Filtrer les produits en stock faible
+            filterLowStock() {
+                const lowStockProducts = this.products.filter(product => 
+                    product.stock <= product.alertThreshold
+                );
+                this.renderStockTable(lowStockProducts);
+                
+                // Mettre à jour l'interface
+                document.getElementById('lowStockBtn').style.display = 'none';
+                document.getElementById('showAllBtn').style.display = 'block';
+                
+                security.showToast(`Affichage de ${lowStockProducts.length} produit(s) en stock faible`);
+            },
+            
+            // NOUVELLE MÉTHODE : Afficher tous les produits
+            showAllProducts() {
+                this.renderStockTable();
+                
+                // Mettre à jour l'interface
+                document.getElementById('lowStockBtn').style.display = 'block';
+                document.getElementById('showAllBtn').style.display = 'none';
+                
+                security.showToast('Affichage de tous les produits');
+            },
+            
             renderStockTable(filteredProducts = null) {
                 const productsToDisplay = filteredProducts || this.products;
                 const tableBody = document.getElementById('stockTableBody');
@@ -1560,6 +1587,15 @@
                 
                 document.getElementById('toggleCurrencyBtn').addEventListener('click', () => {
                     this.toggleCurrency();
+                });
+                
+                // NOUVEAUX ÉCOUTEURS POUR LE FILTRE STOCK FAIBLE
+                document.getElementById('lowStockBtn').addEventListener('click', () => {
+                    this.filterLowStock();
+                });
+                
+                document.getElementById('showAllBtn').addEventListener('click', () => {
+                    this.showAllProducts();
                 });
                 
                 document.getElementById('cancelBtn').addEventListener('click', () => {
