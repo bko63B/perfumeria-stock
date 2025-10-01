@@ -13,6 +13,7 @@
             --danger: #ff7b7b;
             --discount: #ffa726;
             --warning: #fbbf24;
+            --currency: #60a5fa;
         }
         
         * {
@@ -251,6 +252,12 @@
             color: var(--accent);
         }
         
+        .btn-currency {
+            background: transparent;
+            border: 1px solid rgba(96, 165, 250, 0.3);
+            color: var(--currency);
+        }
+        
         .btn-danger {
             background: transparent;
             border: 1px solid rgba(255, 123, 123, 0.3);
@@ -284,6 +291,13 @@
         .kpi-value {
             font-size: 24px;
             font-weight: 700;
+        }
+        
+        .currency-indicator {
+            font-size: 12px;
+            color: var(--currency);
+            margin-top: 5px;
+            font-weight: normal;
         }
         
         .data-card {
@@ -341,6 +355,12 @@
             text-decoration: line-through;
             color: var(--muted);
             font-size: 12px;
+        }
+        
+        .eur-price {
+            color: var(--currency);
+            font-size: 11px;
+            margin-top: 2px;
         }
         
         .action-buttons {
@@ -536,9 +556,13 @@
             
             <div class="app-controls">
                 <input type="text" id="searchInput" class="app-search" placeholder="Rechercher un produit...">
+                <button id="toggleCurrencyBtn" class="app-btn btn-currency">Afficher en EUR</button>
                 <button id="addProductBtn" class="app-btn btn-primary">+ Nouveau</button>
-                <button id="exportBtn" class="app-btn btn-secondary">Exporter</button>
+                <button id="exportBtn" class="app-btn btn-secondary">Exporter CSV</button>
+                <button id="exportDataBtn" class="app-btn btn-secondary">📤 Exporter données</button>
+                <button id="importDataBtn" class="app-btn btn-secondary">📥 Importer données</button>
                 <button id="lockBtn" class="app-btn btn-danger">🔒 Verrouiller</button>
+                <input type="file" id="importDataInput" accept=".json" style="display:none">
             </div>
         </header>
         
@@ -553,11 +577,13 @@
             </div>
             <div class="kpi-card">
                 <div class="kpi-label">Valeur totale</div>
-                <div id="totalValue" class="kpi-value">0 €</div>
+                <div id="totalValue" class="kpi-value">0 zł</div>
+                <div id="totalValueEur" class="currency-indicator"></div>
             </div>
             <div class="kpi-card">
                 <div class="kpi-label">Valeur après remises</div>
-                <div id="totalValueAfterDiscount" class="kpi-value">0 €</div>
+                <div id="totalValueAfterDiscount" class="kpi-value">0 zł</div>
+                <div id="totalValueAfterDiscountEur" class="currency-indicator"></div>
             </div>
         </div>
         
@@ -630,8 +656,9 @@
                     </div>
                     
                     <div class="form-group">
-                        <label class="form-label" for="productPrice">Prix (€)</label>
+                        <label class="form-label" for="productPrice">Prix (zł)</label>
                         <input type="number" id="productPrice" class="form-input" min="0" step="0.01" required>
+                        <div class="form-hint" id="priceEurHint"></div>
                     </div>
                     
                     <div class="form-group">
@@ -660,10 +687,10 @@
         // MODIFIEZ CES VALEURS PAR BALLA KONATE
         const SECURITY_CONFIG = {
             // Clé d'accès principale - Changez cette valeur
-            accessKey: "Sarounia1",
+            accessKey: "BallaKonate2024!",
             
             // Code personnel - Changez cette valeur (6 chiffres)
-            personalCode: "223117",
+            personalCode: "010189",
             
             // Nombre maximum de tentatives avant verrouillage
             maxAttempts: 5,
@@ -674,6 +701,9 @@
             // Durée de session en heures
             sessionDuration: 8
         };
+        
+        // Taux de conversion PLN/EUR (exemple : 1 EUR = 4.32 PLN)
+        const EXCHANGE_RATE = 4.32;
         
         // =============================================
         // SYSTÈME DE SÉCURITÉ
@@ -886,6 +916,7 @@
         const app = {
             products: [],
             editingProductId: null,
+            showInEur: false,
             
             init() {
                 // Charger les produits depuis le stockage local
@@ -899,6 +930,12 @@
                 
                 // Configurer les écouteurs d'événements
                 this.setupEventListeners();
+                
+                // Configurer les fonctionnalités de synchronisation
+                this.setupSyncFeatures();
+                
+                // Mettre à jour l'affichage du taux de change
+                this.updateExchangeRateDisplay();
             },
             
             loadProducts() {
@@ -906,7 +943,7 @@
                 if (storedProducts) {
                     this.products = JSON.parse(storedProducts);
                 } else {
-                    // Données d'exemple
+                    // Données d'exemple en złoty
                     this.products = [
                         {
                             id: this.generateId(),
@@ -915,7 +952,7 @@
                             category: "Parfum Femme",
                             stock: 15,
                             alertThreshold: 5,
-                            price: 120.00,
+                            price: 518.40, // 120 EUR * 4.32
                             discount: 10,
                             createdAt: new Date().toISOString()
                         },
@@ -926,7 +963,7 @@
                             category: "Parfum Homme",
                             stock: 8,
                             alertThreshold: 5,
-                            price: 95.00,
+                            price: 410.40, // 95 EUR * 4.32
                             discount: 0,
                             createdAt: new Date().toISOString()
                         },
@@ -937,7 +974,7 @@
                             category: "Parfum Unisexe",
                             stock: 3,
                             alertThreshold: 5,
-                            price: 110.00,
+                            price: 475.20, // 110 EUR * 4.32
                             discount: 15,
                             createdAt: new Date().toISOString()
                         }
@@ -952,6 +989,48 @@
             
             calculateFinalPrice(price, discount) {
                 return price * (1 - discount / 100);
+            },
+            
+            convertToEur(priceZl) {
+                return priceZl / EXCHANGE_RATE;
+            },
+            
+            convertToZl(priceEur) {
+                return priceEur * EXCHANGE_RATE;
+            },
+            
+            formatPrice(price, currency = 'zl') {
+                if (currency === 'eur') {
+                    return `${price.toFixed(2)} €`;
+                } else {
+                    return `${price.toFixed(2)} zł`;
+                }
+            },
+            
+            toggleCurrency() {
+                this.showInEur = !this.showInEur;
+                this.renderStockTable();
+                this.updateKPIs();
+                this.updateExchangeRateDisplay();
+                
+                // Mettre à jour le texte du bouton
+                const btn = document.getElementById('toggleCurrencyBtn');
+                btn.textContent = this.showInEur ? 'Afficher en zł' : 'Afficher en EUR';
+                
+                security.showToast(this.showInEur ? 'Affichage en euros activé' : 'Affichage en złoty activé');
+            },
+            
+            updateExchangeRateDisplay() {
+                const priceInput = document.getElementById('productPrice');
+                const priceHint = document.getElementById('priceEurHint');
+                
+                if (priceInput.value) {
+                    const priceZl = parseFloat(priceInput.value);
+                    const priceEur = this.convertToEur(priceZl);
+                    priceHint.textContent = `≈ ${this.formatPrice(priceEur, 'eur')} (1 EUR = ${EXCHANGE_RATE} PLN)`;
+                } else {
+                    priceHint.textContent = `Taux de change: 1 EUR = ${EXCHANGE_RATE} PLN`;
+                }
             },
             
             renderStockTable(filteredProducts = null) {
@@ -972,38 +1051,73 @@
                 
                 productsToDisplay.forEach(product => {
                     const isLowStock = product.stock <= product.alertThreshold;
-                    const finalPrice = this.calculateFinalPrice(product.price, product.discount || 0);
+                    const finalPriceZl = this.calculateFinalPrice(product.price, product.discount || 0);
+                    const finalPriceEur = this.convertToEur(finalPriceZl);
                     const hasDiscount = product.discount && product.discount > 0;
                     
                     const row = document.createElement('tr');
                     if (isLowStock) row.classList.add('low-stock');
                     
-                    row.innerHTML = `
-                        <td>${product.name}</td>
-                        <td>${product.sku}</td>
-                        <td>${product.category}</td>
-                        <td class="stock-value">${product.stock}</td>
-                        <td>${product.alertThreshold}</td>
-                        <td>
-                            ${hasDiscount ? 
-                                `<span class="original-price">${product.price.toFixed(2)} €</span><br>${finalPrice.toFixed(2)} €` : 
-                                `${product.price.toFixed(2)} €`
-                            }
-                        </td>
-                        <td>
-                            ${hasDiscount ? 
-                                `<span class="discount-badge">-${product.discount}%</span>` : 
-                                '0%'
-                            }
-                        </td>
-                        <td class="final-price">${finalPrice.toFixed(2)} €</td>
-                        <td>
-                            <div class="action-buttons">
-                                <button class="action-btn edit-btn" data-id="${product.id}">Modifier</button>
-                                <button class="action-btn delete-btn" data-id="${product.id}">Supprimer</button>
-                            </div>
-                        </td>
-                    `;
+                    if (this.showInEur) {
+                        // Affichage en euros
+                        const priceEur = this.convertToEur(product.price);
+                        row.innerHTML = `
+                            <td>${product.name}</td>
+                            <td>${product.sku}</td>
+                            <td>${product.category}</td>
+                            <td class="stock-value">${product.stock}</td>
+                            <td>${product.alertThreshold}</td>
+                            <td>
+                                ${hasDiscount ? 
+                                    `<span class="original-price">${this.formatPrice(priceEur, 'eur')}</span><br>${this.formatPrice(finalPriceEur, 'eur')}` : 
+                                    `${this.formatPrice(priceEur, 'eur')}`
+                                }
+                                <div class="eur-price">${this.formatPrice(product.price, 'zl')}</div>
+                            </td>
+                            <td>
+                                ${hasDiscount ? 
+                                    `<span class="discount-badge">-${product.discount}%</span>` : 
+                                    '0%'
+                                }
+                            </td>
+                            <td class="final-price">${this.formatPrice(finalPriceEur, 'eur')}</td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="action-btn edit-btn" data-id="${product.id}">Modifier</button>
+                                    <button class="action-btn delete-btn" data-id="${product.id}">Supprimer</button>
+                                </div>
+                            </td>
+                        `;
+                    } else {
+                        // Affichage en złoty
+                        row.innerHTML = `
+                            <td>${product.name}</td>
+                            <td>${product.sku}</td>
+                            <td>${product.category}</td>
+                            <td class="stock-value">${product.stock}</td>
+                            <td>${product.alertThreshold}</td>
+                            <td>
+                                ${hasDiscount ? 
+                                    `<span class="original-price">${this.formatPrice(product.price, 'zl')}</span><br>${this.formatPrice(finalPriceZl, 'zl')}` : 
+                                    `${this.formatPrice(product.price, 'zl')}`
+                                }
+                                <div class="eur-price">${this.formatPrice(this.convertToEur(product.price), 'eur')}</div>
+                            </td>
+                            <td>
+                                ${hasDiscount ? 
+                                    `<span class="discount-badge">-${product.discount}%</span>` : 
+                                    '0%'
+                                }
+                            </td>
+                            <td class="final-price">${this.formatPrice(finalPriceZl, 'zl')}</td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="action-btn edit-btn" data-id="${product.id}">Modifier</button>
+                                    <button class="action-btn delete-btn" data-id="${product.id}">Supprimer</button>
+                                </div>
+                            </td>
+                        `;
+                    }
                     
                     tableBody.appendChild(row);
                 });
@@ -1028,20 +1142,34 @@
                 const totalProducts = this.products.length;
                 const lowStockCount = this.products.filter(p => p.stock <= p.alertThreshold).length;
                 
-                // Valeur totale au prix de base
-                const totalValue = this.products.reduce((sum, product) => 
+                // Valeur totale en złoty
+                const totalValueZl = this.products.reduce((sum, product) => 
                     sum + (product.price * product.stock), 0);
                 
-                // Valeur totale après remises
-                const totalValueAfterDiscount = this.products.reduce((sum, product) => {
+                // Valeur totale après remises en złoty
+                const totalValueAfterDiscountZl = this.products.reduce((sum, product) => {
                     const finalPrice = this.calculateFinalPrice(product.price, product.discount || 0);
                     return sum + (finalPrice * product.stock);
                 }, 0);
                 
+                // Conversion en euros
+                const totalValueEur = this.convertToEur(totalValueZl);
+                const totalValueAfterDiscountEur = this.convertToEur(totalValueAfterDiscountZl);
+                
                 document.getElementById('totalProducts').textContent = totalProducts;
                 document.getElementById('lowStockCount').textContent = lowStockCount;
-                document.getElementById('totalValue').textContent = totalValue.toFixed(2) + ' €';
-                document.getElementById('totalValueAfterDiscount').textContent = totalValueAfterDiscount.toFixed(2) + ' €';
+                
+                if (this.showInEur) {
+                    document.getElementById('totalValue').textContent = this.formatPrice(totalValueEur, 'eur');
+                    document.getElementById('totalValueAfterDiscount').textContent = this.formatPrice(totalValueAfterDiscountEur, 'eur');
+                    document.getElementById('totalValueEur').textContent = this.formatPrice(totalValueZl, 'zl');
+                    document.getElementById('totalValueAfterDiscountEur').textContent = this.formatPrice(totalValueAfterDiscountZl, 'zl');
+                } else {
+                    document.getElementById('totalValue').textContent = this.formatPrice(totalValueZl, 'zl');
+                    document.getElementById('totalValueAfterDiscount').textContent = this.formatPrice(totalValueAfterDiscountZl, 'zl');
+                    document.getElementById('totalValueEur').textContent = this.formatPrice(totalValueEur, 'eur');
+                    document.getElementById('totalValueAfterDiscountEur').textContent = this.formatPrice(totalValueAfterDiscountEur, 'eur');
+                }
             },
             
             openAddModal() {
@@ -1050,6 +1178,7 @@
                 document.getElementById('productForm').reset();
                 document.getElementById('productId').value = '';
                 document.getElementById('productDiscount').value = '0';
+                this.updateExchangeRateDisplay();
                 document.getElementById('productModal').style.display = 'flex';
             },
             
@@ -1067,6 +1196,7 @@
                 document.getElementById('productAlert').value = product.alertThreshold;
                 document.getElementById('productPrice').value = product.price;
                 document.getElementById('productDiscount').value = product.discount || 0;
+                this.updateExchangeRateDisplay();
                 document.getElementById('productModal').style.display = 'flex';
             },
             
@@ -1175,11 +1305,13 @@
                     return;
                 }
                 
-                const headers = ['Nom', 'Référence', 'Catégorie', 'Stock', 'Alerte', 'Prix', 'Remise %', 'Prix final'];
+                const headers = ['Nom', 'Référence', 'Catégorie', 'Stock', 'Alerte', 'Prix (zł)', 'Remise %', 'Prix final (zł)', 'Prix (EUR)', 'Prix final (EUR)'];
                 const csvContent = [
                     headers.join(','),
                     ...this.products.map(p => {
-                        const finalPrice = this.calculateFinalPrice(p.price, p.discount || 0);
+                        const finalPriceZl = this.calculateFinalPrice(p.price, p.discount || 0);
+                        const priceEur = this.convertToEur(p.price);
+                        const finalPriceEur = this.convertToEur(finalPriceZl);
                         return [
                             `"${p.name}"`,
                             p.sku,
@@ -1188,7 +1320,9 @@
                             p.alertThreshold,
                             p.price.toFixed(2),
                             (p.discount || 0).toFixed(1),
-                            finalPrice.toFixed(2)
+                            finalPriceZl.toFixed(2),
+                            priceEur.toFixed(2),
+                            finalPriceEur.toFixed(2)
                         ].join(',');
                     })
                 ].join('\n');
@@ -1206,6 +1340,75 @@
                 security.showToast('Export CSV réussi');
             },
             
+            // =============================================
+            // FONCTIONNALITÉS DE SYNCHRONISATION
+            // =============================================
+            
+            exportData() {
+                const data = {
+                    products: this.products,
+                    exportDate: new Date().toISOString(),
+                    version: "1.0",
+                    totalProducts: this.products.length,
+                    totalValue: this.products.reduce((sum, p) => sum + (p.price * p.stock), 0),
+                    currency: "PLN",
+                    exchangeRate: EXCHANGE_RATE
+                };
+                
+                const dataStr = JSON.stringify(data, null, 2);
+                const dataBlob = new Blob([dataStr], { type: 'application/json' });
+                const url = URL.createObjectURL(dataBlob);
+                const link = document.createElement('a');
+                
+                link.href = url;
+                link.download = `perfumeria-backup-${new Date().toISOString().split('T')[0]}.json`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+                
+                security.showToast('Données exportées avec succès');
+            },
+            
+            importData(event) {
+                const file = event.target.files[0];
+                if (!file) return;
+                
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        const importedData = JSON.parse(e.target.result);
+                        
+                        if (confirm(`Voulez-vous remplacer vos ${this.products.length} produits actuels par les ${importedData.products.length} produits du fichier ?`)) {
+                            this.products = importedData.products || [];
+                            this.saveProducts();
+                            this.renderStockTable();
+                            this.updateKPIs();
+                            security.showToast(`${importedData.products.length} produits importés avec succès`);
+                        }
+                    } catch (error) {
+                        security.showToast('Erreur lors de l\'import du fichier', 'error');
+                        console.error('Import error:', error);
+                    }
+                };
+                reader.readAsText(file);
+                event.target.value = '';
+            },
+            
+            setupSyncFeatures() {
+                document.getElementById('exportDataBtn').addEventListener('click', () => {
+                    this.exportData();
+                });
+                
+                document.getElementById('importDataBtn').addEventListener('click', () => {
+                    document.getElementById('importDataInput').click();
+                });
+                
+                document.getElementById('importDataInput').addEventListener('change', (event) => {
+                    this.importData(event);
+                });
+            },
+            
             generateId() {
                 return Date.now().toString(36) + Math.random().toString(36).substr(2);
             },
@@ -1219,6 +1422,10 @@
                     this.exportToCSV();
                 });
                 
+                document.getElementById('toggleCurrencyBtn').addEventListener('click', () => {
+                    this.toggleCurrency();
+                });
+                
                 document.getElementById('cancelBtn').addEventListener('click', () => {
                     this.closeModal();
                 });
@@ -1229,6 +1436,10 @@
                 
                 document.getElementById('searchInput').addEventListener('input', () => {
                     this.filterProducts();
+                });
+                
+                document.getElementById('productPrice').addEventListener('input', () => {
+                    this.updateExchangeRateDisplay();
                 });
                 
                 // Fermer le modal en cliquant à l'extérieur
